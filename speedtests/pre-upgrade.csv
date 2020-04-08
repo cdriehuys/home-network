@@ -1,0 +1,15 @@
+Device,Location,Connection,Ping (ms),Down (Mbps),Up (Mbps)
+Desktop,Bedroom,Wired,2,827.11,674.21
+Laptop,Bedroom,Wifi,6,20.47,28.63
+Phone,Bedroom,Wifi,2,36.8,30.1
+Laptop,Access Point,Wifi,6,26.84,44.58
+Phone,Access Point,Wifi,2,32.0,50.4
+Laptop,Living Room,Wifi,7,17.47,18.08
+Phone,Living Room,Wifi,2,1.21,3.81
+Laptop,Balcony,Wifi,0,0,0
+Phone,Balcony,Wifi,0,0,0
+Laptop,Master,Wired,25,433.80,544.74
+Laptop,Master,Wifi,30,4.44,1.99
+Phone,Master,Wifi,4,3.99,1.87
+Laptop,Bedroom 2,Wifi,27,11.13,35.22
+Phone,Bedroom 2,Wifi,2,34.6,54.5
