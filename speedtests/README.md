@@ -25,3 +25,13 @@ provided network box.
 
 See [`pre-upgrade.csv`](pre-upgrade.csv) for data.
 
+
+## New Access Point
+
+The next upgrade was to disable the wireless network broadcast from the Google
+network box and instead broadcast the network from a Unifi FlexHD.
+
+### Data
+
+See [`new-access-point.csv`](new-access-point.csv) for data.
+
