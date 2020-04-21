@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+  ansible:
+    build:
+      context: .
+    image: ansible
+
+    command:
+      - "ansible-playbook"
+      - "-i"
+      - "./inventory.ini"
+      - "site.yml"
+
+    volumes:
+      - "./:/opt/provisioning/"
+      - "~/.ssh/id_rsa:/root/.ssh/id_rsa"
+      - "~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub"

@@ -1,0 +1,6 @@
+---
+- name: restart_sshd
+  become: true
+  service:
+    name: sshd
+    state: reloaded

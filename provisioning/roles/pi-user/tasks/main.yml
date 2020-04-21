@@ -1,0 +1,10 @@
+- name: Test connection with Ansible user
+  become: true
+  remote_user: ansible
+  ping:
+  register: pi_ansible_ping
+  ignore_errors: true
+
+- name: Provision Ansible user
+  include_tasks: create-ansible-user.yml
+  when: pi_ansible_ping is failed or ('unreachable' in pi_ansible_ping and pi_ansible_ping['unreachable'])

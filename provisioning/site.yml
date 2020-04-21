@@ -1,0 +1,20 @@
+---
+- name: Create admin user on Raspberry Pi machines
+  gather_facts: false
+  hosts: piholes
+  # We need to attempt a login with the admin user to check if these tasks need
+  # to run. In order to do that, we need to be able to handle an unreachable
+  # host.
+  ignore_unreachable: true
+  remote_user: ansible
+
+  roles:
+    - pi-user
+
+- name: Provision Pi-hole servers
+  hosts: piholes
+
+  remote_user: ansible
+
+  roles:
+    - pi-hole
