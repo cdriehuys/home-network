@@ -40,5 +40,5 @@
     path: /etc/ssh/sshd_config
     regexp: "^#?UsePAM"
     line: UsePAM yes
-  validate: sshd -t -f %s
+    validate: sshd -t -f %s
   notify: restart_sshd

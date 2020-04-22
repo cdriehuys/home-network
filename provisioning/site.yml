@@ -17,4 +17,5 @@
   remote_user: ansible
 
   roles:
-    - pi-hole
+    - pi-harden
+    - docker
