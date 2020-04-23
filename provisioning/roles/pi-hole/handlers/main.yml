@@ -1,0 +1,8 @@
+---
+- name: reload pihole
+  become: true
+  # The standard method of reloading Pi-hole is `pihole -r`, but that opens
+  # dialogs with prompts. If we directly call the install script that is usually
+  # invoked by the `pihole` wrapper, we can pass in the undocumented flags that
+  # allow for an unattended reload.
+  command: '/etc/.pihole/automated\ install/basic-install.sh --reconfigure --unattended'

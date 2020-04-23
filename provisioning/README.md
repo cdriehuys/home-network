@@ -10,6 +10,9 @@ dependencies every time and to reduce the requirements on the host machine to
 just Docker (and `docker-compose`):
 
 ```bash
+# This has to be done once.
+echo "$VAULT_PASSWORD" > .vault_password
+
 docker-compose run ansible
 ```
 

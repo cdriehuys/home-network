@@ -1,0 +1,22 @@
+---
+- name: Configure Pi-hole
+  become: true
+  template:
+    dest: /etc/pihole/setupVars.conf
+    group: root
+    mode: 0644
+    owner: root
+    src: setupVars.conf.j2
+  notify: reload pihole
+
+- name: Install Pi-hole
+  shell: curl -L https://install.pi-hole.net | bash /dev/stdin --unattended
+  args:
+    creates: /usr/local/bin/pihole
+  register: pi_hole_install
+
+- name: Update Pi-hole
+  command: pihole -up
+  when: not pi_hole_install.changed
+  register: pi_hole_update
+  changed_when: "'update_available' in pi_hole_update.stdout"

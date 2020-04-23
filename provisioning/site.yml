@@ -16,6 +16,9 @@
 
   remote_user: ansible
 
+  vars_files:
+    - env_vars/vault.yml
+
   roles:
     - pi-harden
-    - docker
+    - pi-hole

@@ -12,6 +12,9 @@ services:
       - "./inventory.ini"
       - "site.yml"
 
+    environment:
+      ANSIBLE_VAULT_PASSWORD_FILE: "./.vault_password"
+
     volumes:
       - "./:/opt/provisioning/"
       - "~/.ssh/id_rsa:/root/.ssh/id_rsa"
