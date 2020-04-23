@@ -1,0 +1,31 @@
+---
+- name: Create directories to persist Pi-hole data
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ pi_hole_dir_dnsmasq_config }}"
+    - "{{ pi_hole_dir_pi_hole_config }}"
+
+- name: Run Pi-hole container
+  docker_container:
+    dns_servers:
+      - 127.0.0.1
+      - 1.1.1.1
+    env:
+      DNS1: "1.1.1.1"
+      DNS2: "no"
+      TZ: "America/New_York"
+    image: "{{ pi_hole_docker_image }}"
+    name: "pi-hole"
+    published_ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "80:80/tcp"
+      - "443:443/tcp"
+    restart_policy: always
+    volumes:
+      - "{{ pi_hole_dir_dnsmasq_config }}/:/etc/dnsmasq.d/"
+      - "{{ pi_hole_dir_pi_hole_config }}/:/etc/pi-hole/"

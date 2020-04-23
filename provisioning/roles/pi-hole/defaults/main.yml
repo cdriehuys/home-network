@@ -1,0 +1,7 @@
+---
+#pi_hole_docker_image: "pihole/pihole:v4.4-armhf"
+pi_hole_docker_image: "diginc/docker-pi-hole-fork:deploy-images-from-ci-armel"
+
+pi_hole_dir_data: "/opt/pi-hole"
+pi_hole_dir_dnsmasq_config: "{{ pi_hole_dir_data }}/etc/dnsmasq.d"
+pi_hole_dir_pi_hole_config: "{{ pi_hole_dir_data }}/etc/pi-hole"

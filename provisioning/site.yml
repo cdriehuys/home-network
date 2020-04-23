@@ -19,3 +19,4 @@
   roles:
     - pi-harden
     - docker
+    - pi-hole
