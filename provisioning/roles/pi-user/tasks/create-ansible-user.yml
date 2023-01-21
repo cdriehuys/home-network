@@ -20,15 +20,29 @@
     line: 'ansible ALL=(ALL:ALL) NOPASSWD: ALL'
     validate: /usr/sbin/visudo -cf %s
 
+- name: Create SSH directory
+  become: true
+  remote_user: pi
+  vars:
+    ansible_ssh_pass: raspberry
+  ansible.builtin.file:
+    path: /home/ansible/.ssh
+    state: directory
+    mode: "700"
+    owner: ansible
+    group: ansible
+
 - name: Add authorized keys
   become: true
   remote_user: pi
   vars:
     ansible_ssh_pass: raspberry
-  authorized_key:
-    key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
-    state: present
-    user: ansible
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/authorized_keys"
+    dest: /home/ansible/.ssh/authorized_keys
+    mode: "600"
+    owner: ansible
+    group: ansible
 
 # Without enabling PAM, the password-less ansible user cannot log in.
 - name: Enable PAM for SSH

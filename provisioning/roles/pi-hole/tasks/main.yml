@@ -1,16 +1,38 @@
 ---
+- name: Create Pi-hole user
+  become: true
+  ansible.builtin.user:
+    create_home: false
+    name: pihole
+
+- name: Create Pi-hole config directory
+  become: true
+  ansible.builtin.file:
+    path: /etc/pihole
+    state: directory
+    mode: "775"
+    owner: pihole
+    group: pihole
+
 - name: Configure Pi-hole
   become: true
   template:
     dest: /etc/pihole/setupVars.conf
     group: root
-    mode: 0644
+    mode: "644"
     owner: root
     src: setupVars.conf.j2
   notify: reload pihole
 
+- name: Download Pi-hole installer
+  become: true
+  ansible.builtin.get_url:
+    url: https://install.pi-hole.net
+    dest: /opt/pi-hole-installer.sh
+    mode: "755"
+
 - name: Install Pi-hole
-  shell: curl -L https://install.pi-hole.net | bash /dev/stdin --unattended
+  ansible.builtin.command: /opt/pi-hole-installer.sh --unattended
   args:
     creates: /usr/local/bin/pihole
   register: pi_hole_install

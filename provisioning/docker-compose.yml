@@ -6,16 +6,9 @@ services:
       context: .
     image: ansible
 
-    command:
-      - "ansible-playbook"
-      - "-i"
-      - "./inventory.ini"
-      - "site.yml"
-
     environment:
       ANSIBLE_VAULT_PASSWORD_FILE: "./.vault_password"
 
     volumes:
       - "./:/opt/provisioning/"
-      - "~/.ssh/id_rsa:/root/.ssh/id_rsa"
-      - "~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub"
+      - "~/.ssh:/root/.ssh:ro"

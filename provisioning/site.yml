@@ -13,6 +13,9 @@
 
 - name: Provision Pi-hole servers
   hosts: piholes
+  # Only upgrade one-at-a-time so that we always have at least one nameserver
+  # available.
+  serial: 1
 
   remote_user: ansible
 
@@ -20,5 +23,6 @@
     - env_vars/vault.yml
 
   roles:
+    - update-hostname
     - pi-harden
     - pi-hole
