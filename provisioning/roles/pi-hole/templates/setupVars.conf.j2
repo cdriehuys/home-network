@@ -12,4 +12,6 @@ LIGHTTPD_ENABLED=true
 CACHE_SIZE=10000
 DNS_FQDN_REQUIRED=true
 DNS_BOGUS_PRIV=true
-DNSMASQ_LISTENING=local
+REV_SERVER=false
+#; Listen on all interfaces to allow usage through Tailscale.
+DNSMASQ_LISTENING=all
