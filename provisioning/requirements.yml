@@ -1,0 +1,6 @@
+collections:
+  - name: ansible.posix
+
+roles:
+  - src: artis3n.tailscale
+    version: v3.5.0

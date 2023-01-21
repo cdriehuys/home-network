@@ -12,5 +12,8 @@ RUN apt-get update && \
   pip install 'ansible==7.1.0'
 
 COPY entrypoint.sh /entrypoint.sh
-
 ENTRYPOINT [ "/entrypoint.sh" ]
+
+COPY requirements.yml /tmp/requirements.yml
+RUN ansible-galaxy install -r /tmp/requirements.yml && \
+    rm /tmp/requirements.yml

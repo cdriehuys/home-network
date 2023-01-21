@@ -25,7 +25,7 @@ docker compose run --build ansible
 The requirements that have to be met by each piece of hardware on the network
 before they can be provisioned.
 
-## Raspberry Pis
+### Raspberry Pis
 
 * SD card flashed with Raspberry Pi OS Lite
 * SSH access enabled through the Raspberry Pi Imager software with the default

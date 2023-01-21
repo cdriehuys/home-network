@@ -1,5 +1,5 @@
 ---
-- name: Create admin user on Raspberry Pi machines
+- name: Create admin users
   gather_facts: false
   hosts: piholes
   # We need to attempt a login with the admin user to check if these tasks need
@@ -11,7 +11,26 @@
   roles:
     - pi-user
 
-- name: Provision Pi-hole servers
+- name: Provision servers
+  hosts: piholes
+
+  remote_user: ansible
+
+  vars_files:
+    - env_vars/vault.yml
+
+  roles:
+    - update-hostname
+    - pi-harden
+    - ip-forwarding
+    - role: artis3n.tailscale
+      vars:
+        tailscale_args: >
+          --accept-dns=false
+          --advertise-exit-node
+          --advertise-routes=192.168.1.0/24
+
+- name: Provision DNS
   hosts: piholes
   # Only upgrade one-at-a-time so that we always have at least one nameserver
   # available.
@@ -23,6 +42,4 @@
     - env_vars/vault.yml
 
   roles:
-    - update-hostname
-    - pi-harden
     - pi-hole
