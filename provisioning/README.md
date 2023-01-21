@@ -7,13 +7,17 @@ everything.
 
 We invoke Ansible inside a docker container to ensure we have the same
 dependencies every time and to reduce the requirements on the host machine to
-just Docker (and `docker-compose`):
+just Docker:
 
 ```bash
 # This has to be done once.
 echo "$VAULT_PASSWORD" > .vault_password
 
-docker-compose run ansible
+# Run it!
+docker compose run ansible
+
+# If editing the Docker image, don't forget the --build tag:
+docker compose run --build ansible
 ```
 
 ## Prerequisites
@@ -23,6 +27,6 @@ before they can be provisioned.
 
 ## Raspberry Pis
 
-* SD card flashed with Raspbian. We don't need the desktop environment so we can
-  use Raspbian Lite.
-* SSH access enabled by `touch /path/to/boot/ssh`
+* SD card flashed with Raspberry Pi OS Lite
+* SSH access enabled through the Raspberry Pi Imager software with the default
+  username and password of `pi` and `raspberry`
