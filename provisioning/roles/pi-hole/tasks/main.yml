@@ -29,6 +29,7 @@
   ansible.builtin.get_url:
     url: https://install.pi-hole.net
     dest: /opt/pi-hole-installer.sh
+    force: false
     mode: "755"
 
 - name: Install Pi-hole
