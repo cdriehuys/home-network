@@ -1,0 +1,10 @@
+[Unit]
+Description=Update the authorized_keys for %i
+
+[Service]
+ExecStart=/usr/local/bin/pull-keys.sh {{ key_sync_url }}
+Type=oneshot
+User=%i
+
+[Install]
+WantedBy=multi-user.target

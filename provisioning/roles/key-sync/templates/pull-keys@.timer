@@ -1,0 +1,8 @@
+[Unit]
+Description=Update authorized SSH keys for %i
+
+[Timer]
+OnUnitActiveSec=15m
+
+[Install]
+WantedBy=timers.target

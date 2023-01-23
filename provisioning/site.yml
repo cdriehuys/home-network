@@ -22,6 +22,9 @@
   roles:
     - update-hostname
     - pi-harden
+    - role: key-sync
+      vars:
+        key_sync_url: https://raw.githubusercontent.com/cdriehuys/public-keys/main/keys
     - ip-forwarding
     - role: artis3n.tailscale
       vars:
