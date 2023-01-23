@@ -2,7 +2,8 @@
 Description=Update authorized SSH keys for %i
 
 [Timer]
-OnUnitActiveSec=15m
+OnBootSec=5min
+OnUnitActiveSec=15min
 
 [Install]
 WantedBy=timers.target

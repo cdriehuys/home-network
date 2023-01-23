@@ -16,16 +16,21 @@
 
 - name: Create systemd timer
   become: true
-  ansible.builtin.template:
+  ansible.builtin.copy:
     src: pull-keys@.timer
     dest: /etc/systemd/system/pull-keys@.timer
     mode: "644"
   register: systemd_timer
 
-- name: Reload systemd
+# The way we use the systemd timer computes the next trigger time based on the
+# last execution time for the service. We need to either reboot the machine or
+# start a run manually in order for the timer to function.
+- name: Run task to pull keys
   become: true
   ansible.builtin.systemd:
     daemon_reload: true
+    name: pull-keys@{{ ansible_user_id }}
+    state: started
   when: systemd_service.changed or systemd_timer.changed
 
 - name: Enable and start systemd timer

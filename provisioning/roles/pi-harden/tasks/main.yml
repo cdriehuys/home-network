@@ -1,11 +1,9 @@
 ---
 - name: Update authorized keys
-  ansible.builtin.copy:
-    src: "{{ playbook_dir }}/authorized_keys"
+  ansible.builtin.get_url:
+    url: "{{ authorized_keys_url }}"
     dest: /home/ansible/.ssh/authorized_keys
-    mode: "600"
-    owner: ansible
-    group: ansible
+    mode: "644"
 
 - name: Disable SSH challenge response authentication
   become: true

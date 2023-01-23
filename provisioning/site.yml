@@ -9,22 +9,19 @@
   remote_user: ansible
 
   roles:
-    - pi-user
+    - provisioning-user
 
 - name: Provision servers
   hosts: piholes
 
   remote_user: ansible
 
-  vars_files:
-    - env_vars/vault.yml
-
   roles:
     - update-hostname
     - pi-harden
     - role: key-sync
       vars:
-        key_sync_url: https://raw.githubusercontent.com/cdriehuys/public-keys/main/keys
+        key_sync_url: "{{ authorized_keys_url }}"
     - ip-forwarding
     - role: artis3n.tailscale
       vars:
@@ -40,9 +37,6 @@
   serial: 1
 
   remote_user: ansible
-
-  vars_files:
-    - env_vars/vault.yml
 
   roles:
     - pi-hole

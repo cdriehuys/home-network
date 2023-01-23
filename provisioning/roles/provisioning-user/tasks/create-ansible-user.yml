@@ -37,10 +37,10 @@
   remote_user: pi
   vars:
     ansible_ssh_pass: raspberry
-  ansible.builtin.copy:
-    src: "{{ playbook_dir }}/authorized_keys"
+  ansible.builtin.get_url:
+    url: "{{ authorized_keys_url }}"
     dest: /home/ansible/.ssh/authorized_keys
-    mode: "600"
+    mode: "644"
     owner: ansible
     group: ansible
 
