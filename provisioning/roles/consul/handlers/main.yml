@@ -1,0 +1,5 @@
+- name: Reload Consul
+  become: true
+  ansible.builtin.service:
+    name: consul
+    state: reloaded

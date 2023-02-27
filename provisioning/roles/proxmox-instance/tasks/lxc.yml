@@ -6,6 +6,8 @@
     cores: "{{ instance_cores }}"
     cpuunits: "{{ instance_cpuunits }}"
     disk: local-lvm:8
+    features:
+      - nesting=1
     hostname: "{{ instance_hostname }}"
     memory: 512
     netif:

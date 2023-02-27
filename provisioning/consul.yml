@@ -5,35 +5,47 @@
     instance_cores: 1
     instance_cpuunits: 1000
     instance_node: pve
-    instance_ostemplate: local:vztmpl/debian-11-standard_11.6-1_amd64.tar.zst
-    proxmox_host: pve.lan.qidux.com:8006
+    instance_ostemplate: local:vztmpl/debian-11-with-ssh_11.6-1_amd64.tar.zst
+    proxmox_host: pve.{{ local_domain }}:8006
 
   roles:
     - role: proxmox-instance
       action: create
-      instance_type: lxc
+      add_to_inventory_group: consul
       instance_hostname: consul1
       instance_password: abcde
+      instance_type: lxc
     - role: proxmox-instance
       action: create
-      instance_type: lxc
+      add_to_inventory_group: consul
       instance_hostname: consul2
       instance_password: abcde
+      instance_type: lxc
     - role: proxmox-instance
       action: create
-      instance_type: lxc
+      add_to_inventory_group: consul
       instance_hostname: consul3
       instance_password: abcde
+      instance_type: lxc
 
-    - role: proxmox-instance
-      action: delete
-      instance_hostname: consul1
-      instance_type: lxc
-    - role: proxmox-instance
-      action: delete
-      instance_hostname: consul2
-      instance_type: lxc
-    - role: proxmox-instance
-      action: delete
-      instance_hostname: consul3
-      instance_type: lxc
+- name: Create admin users
+  gather_facts: false
+  hosts: consul
+  # We need to attempt a login with the admin user to check if these tasks need
+  # to run. In order to do that, we need to be able to handle an unreachable
+  # host.
+  ignore_unreachable: true
+  remote_user: ansible
+
+  roles:
+    - role: provisioning-user
+      original_user: root
+      original_password: abcde
+
+- name: Configure Consul
+  hosts: consul
+  remote_user: ansible
+
+  roles:
+    - role: consul
+      consul_mode: server

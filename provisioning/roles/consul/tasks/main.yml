@@ -1,0 +1,112 @@
+- name: Install prerequisites
+  become: true
+  ansible.builtin.package:
+    name: unzip
+    state: present
+
+- name: Create consul user
+  become: true
+  ansible.builtin.user:
+    create_home: false
+    name: consul
+
+- name: Create install directory
+  become: true
+  ansible.builtin.file:
+    group: consul
+    owner: consul
+    path: "{{ consul_install_dir }}"
+    state: directory
+    mode: '755'
+
+- name: Create binary directory
+  become: true
+  ansible.builtin.file:
+    group: consul
+    owner: consul
+    path: "{{ consul_binary_dir }}"
+    state: directory
+    mode: '755'
+
+- name: Create config directory
+  become: true
+  ansible.builtin.file:
+    group: consul
+    owner: consul
+    path: "{{ consul_config_dir }}"
+    state: directory
+    mode: '750'
+
+- name: Create data directory
+  become: true
+  ansible.builtin.file:
+    group: consul
+    owner: consul
+    path: "{{ consul_data_dir }}"
+    state: directory
+    mode: '755'
+
+- name: Download installer
+  become: true
+  ansible.builtin.get_url:
+    checksum: "{{ consul_checksum }}"
+    dest: /opt/{{ consul_archive }}
+    url: https://releases.hashicorp.com/consul/1.15.0/{{ consul_archive }}
+
+- name: Unzip application
+  become: true
+  ansible.builtin.unarchive:
+    dest: "{{ consul_binary_dir }}"
+    group: consul
+    include:
+      - consul
+    mode: '755'
+    owner: consul
+    remote_src: true
+    src: /opt/{{ consul_archive }}
+
+- name: Upload agent config file
+  become: true
+  ansible.builtin.template:
+    dest: "{{ consul_config_dir }}/consul.hcl"
+    group: consul
+    mode: '640'
+    owner: consul
+    src: consul.hcl
+  notify:
+    - Reload Consul
+
+- name: Upload server config file
+  become: true
+  ansible.builtin.template:
+    dest: "{{ consul_config_dir }}/server.hcl"
+    group: consul
+    mode: '640'
+    owner: consul
+    src: server.hcl
+  when: consul_mode == "server"
+  notify:
+    - Reload Consul
+
+- name: Upload systemd unit file
+  become: true
+  ansible.builtin.template:
+    dest: /etc/systemd/system/consul.service
+    group: root
+    mode: '644'
+    owner: root
+    src: consul.service
+  register: consul_unit_file
+
+- name: Pick up unit file changes
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: consul_unit_file.changed
+
+- name: Start and enable Consul
+  become: true
+  ansible.builtin.service:
+    enabled: true
+    name: consul
+    state: started

@@ -1,18 +1,27 @@
 ---
+- name: Install sudo utility
+  become: true
+  remote_user: "{{ original_user }}"
+  vars:
+    ansible_ssh_pass: "{{ original_password }}"
+  ansible.builtin.package:
+    name: sudo
+    state: present
+
 - name: Create Ansible user
   become: true
-  remote_user: pi
+  remote_user: "{{ original_user }}"
   vars:
-    ansible_ssh_pass: raspberry
+    ansible_ssh_pass: "{{ original_password }}"
   user:
     groups: sudo
     name: ansible
 
 - name: Enable password-less sudo
   become: true
-  remote_user: pi
+  remote_user: "{{ original_user }}"
   vars:
-    ansible_ssh_pass: raspberry
+    ansible_ssh_pass: "{{ original_password }}"
   lineinfile:
     path: /etc/sudoers
     state: present
@@ -22,9 +31,9 @@
 
 - name: Create SSH directory
   become: true
-  remote_user: pi
+  remote_user: "{{ original_user }}"
   vars:
-    ansible_ssh_pass: raspberry
+    ansible_ssh_pass: "{{ original_password }}"
   ansible.builtin.file:
     path: /home/ansible/.ssh
     state: directory
@@ -34,9 +43,9 @@
 
 - name: Add authorized keys
   become: true
-  remote_user: pi
+  remote_user: "{{ original_user }}"
   vars:
-    ansible_ssh_pass: raspberry
+    ansible_ssh_pass: "{{ original_password }}"
   ansible.builtin.get_url:
     url: "{{ authorized_keys_url }}"
     dest: /home/ansible/.ssh/authorized_keys
@@ -47,9 +56,9 @@
 # Without enabling PAM, the password-less ansible user cannot log in.
 - name: Enable PAM for SSH
   become: true
-  remote_user: pi
+  remote_user: "{{ original_user }}"
   vars:
-    ansible_ssh_pass: raspberry
+    ansible_ssh_pass: "{{ original_password }}"
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: "^#?UsePAM"

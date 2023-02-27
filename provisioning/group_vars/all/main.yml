@@ -1,1 +1,2 @@
 authorized_keys_url: https://raw.githubusercontent.com/cdriehuys/public-keys/main/keys
+local_domain: lan.qidux.com

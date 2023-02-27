@@ -9,7 +9,9 @@
   remote_user: ansible
 
   roles:
-    - provisioning-user
+    - role: provisioning-user
+      original_user: pi
+      original_password: raspberry
 
 - name: Provision servers
   hosts: piholes
@@ -18,7 +20,7 @@
 
   roles:
     - update-hostname
-    - pi-harden
+    - ssh-harden
     - role: key-sync
       vars:
         key_sync_url: "{{ authorized_keys_url }}"

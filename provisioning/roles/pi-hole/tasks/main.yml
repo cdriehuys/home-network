@@ -16,7 +16,7 @@
 
 - name: Configure Pi-hole
   become: true
-  template:
+  ansible.builtin.template:
     dest: /etc/pihole/setupVars.conf
     group: root
     mode: "644"
@@ -26,7 +26,7 @@
 
 - name: Upload local DNS records
   become: true
-  ansible.builtin.copy:
+  ansible.builtin.template:
     dest: /etc/pihole/custom.list
     group: pihole
     mode: "644"
@@ -48,7 +48,7 @@
   register: pi_hole_install
 
 - name: Update Pi-hole
-  command: pihole -up
+  ansible.builtin.command: pihole -up
   when: not pi_hole_install.changed
   register: pi_hole_update
   changed_when: "'update_available' in pi_hole_update.stdout"

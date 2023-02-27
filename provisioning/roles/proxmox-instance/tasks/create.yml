@@ -35,3 +35,10 @@
   until: "vm_current_status.json.data.status == 'running'"
   retries: 10
   delay: 3
+
+- name: Add instance to inventory
+  ansible.builtin.add_host:
+    groups:
+      - "{{ add_to_inventory_group }}"
+    name: "{{ instance_hostname }}.{{ local_domain }}"
+  when: add_to_inventory_group is defined
