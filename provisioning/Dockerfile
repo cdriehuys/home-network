@@ -9,10 +9,11 @@ ENV ANSIBLE_HOST_KEY_CHECKING=False
 RUN apt-get update && \
   apt-get install -y sshpass && \
   pip install --upgrade pip && \
-  pip install 'ansible==7.1.0'
+  pip install 'ansible==7.1.0' 'jmespath==1.0.1' 'proxmoxer==2.0.1' 'requests==2.28.2'
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT [ "/entrypoint.sh" ]
+CMD [ "site.yml" ]
 
 COPY requirements.yml /tmp/requirements.yml
 RUN ansible-galaxy install -r /tmp/requirements.yml && \

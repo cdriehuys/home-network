@@ -24,6 +24,15 @@
     src: setupVars.conf.j2
   notify: reload pihole
 
+- name: Upload local DNS records
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/pihole/custom.list
+    group: pihole
+    mode: "644"
+    owner: pihole
+    src: custom.list
+
 - name: Download Pi-hole installer
   become: true
   ansible.builtin.get_url:

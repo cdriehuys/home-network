@@ -5,5 +5,4 @@ set -o pipefail
 
 ansible-playbook \
     -i ./inventory.ini \
-    site.yml \
     $@

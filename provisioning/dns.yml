@@ -1,0 +1,42 @@
+---
+- name: Create admin users
+  gather_facts: false
+  hosts: piholes
+  # We need to attempt a login with the admin user to check if these tasks need
+  # to run. In order to do that, we need to be able to handle an unreachable
+  # host.
+  ignore_unreachable: true
+  remote_user: ansible
+
+  roles:
+    - provisioning-user
+
+- name: Provision servers
+  hosts: piholes
+
+  remote_user: ansible
+
+  roles:
+    - update-hostname
+    - pi-harden
+    - role: key-sync
+      vars:
+        key_sync_url: "{{ authorized_keys_url }}"
+    - ip-forwarding
+    - role: artis3n.tailscale
+      vars:
+        tailscale_args: >
+          --accept-dns=false
+          --advertise-exit-node
+          --advertise-routes=192.168.1.0/24
+
+- name: Provision DNS
+  hosts: piholes
+  # Only upgrade one-at-a-time so that we always have at least one nameserver
+  # available.
+  serial: 1
+
+  remote_user: ansible
+
+  roles:
+    - pi-hole

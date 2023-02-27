@@ -1,0 +1,37 @@
+- include_tasks: lxc.yml
+  when: instance_type == "lxc"
+
+- name: Wait until instance is queryable
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_host }}/api2/json/cluster/resources?type=vm"
+    method: GET
+    headers: "{{ proxmox_auth_headers }}"
+  register: cluster_resources
+  until: cluster_resources.json.data | json_query(_query_get_vmid) | first | default(None)
+  vars:
+    _query_get_vmid: "[?name=='{{ instance_hostname }}']"
+  retries: 10
+  delay: 3
+
+- name: Retrieve vm_facts
+  ansible.builtin.set_fact:
+    vm_facts: "{{ cluster_resources.json.data | json_query(_query_get_vmid) | first }}"
+  vars:
+    _query_get_vmid: "[?name=='{{ instance_hostname }}']"
+
+- name: Start instance {{ instance_hostname }}
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_host }}/api2/json/nodes/{{ vm_facts.node }}/{{ instance_type }}/{{ vm_facts.vmid }}/status/start"
+    method: POST
+    headers: "{{ proxmox_auth_headers }}"
+  when: vm_facts.status != "running"
+
+- name: "Wait until VM is running"
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_host }}/api2/json/nodes/{{ vm_facts.node }}/{{ instance_type }}/{{ vm_facts.vmid }}/status/current"
+    method: GET
+    headers: "{{ proxmox_auth_headers }}"
+  register: vm_current_status
+  until: "vm_current_status.json.data.status == 'running'"
+  retries: 10
+  delay: 3

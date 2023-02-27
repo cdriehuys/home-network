@@ -1,0 +1,19 @@
+- name: Create "{{ instance_hostname }}" container
+  community.general.proxmox:
+    api_host: "{{ proxmox_host }}"
+    api_password: "{{ proxmox_password }}"
+    api_user: "{{ proxmox_user }}"
+    cores: "{{ instance_cores }}"
+    cpuunits: "{{ instance_cpuunits }}"
+    disk: local-lvm:8
+    hostname: "{{ instance_hostname }}"
+    memory: 512
+    netif:
+      net0: name=eth0,bridge=vmbr0,firewall=1,ip=dhcp,type=veth
+    node: "{{ instance_node }}"
+    onboot: true
+    ostemplate: "{{ instance_ostemplate }}"
+    password: "{{ instance_password }}"
+    state: present
+    unprivileged: true
+  register: instance_created

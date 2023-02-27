@@ -1,0 +1,17 @@
+- name: Authenticate to Proxmox API
+  block:
+  - uri:
+      url: "https://{{ proxmox_host }}/api2/json/access/ticket"
+      method: POST
+      body_format: form-urlencoded
+      body:
+        username: "{{ proxmox_user }}"
+        password: "{{ proxmox_password }}"
+    register: proxmox_auth
+  - set_fact:
+      proxmox_auth_headers:
+        Cookie: "PVEAuthCookie={{ proxmox_auth.json.data.ticket }}"
+        CSRFPreventionToken: "{{ proxmox_auth.json.data.CSRFPreventionToken }}"
+
+- include_tasks:
+    file: "{{ action }}.yml"

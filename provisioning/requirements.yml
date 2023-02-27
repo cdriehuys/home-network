@@ -1,5 +1,6 @@
 collections:
   - name: ansible.posix
+  - name: community.general
 
 roles:
   - src: artis3n.tailscale
