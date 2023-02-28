@@ -4,5 +4,5 @@ set -euf
 set -o pipefail
 
 ansible-playbook \
-    -i ./inventory.ini \
+    -i ./inventory.yml \
     $@

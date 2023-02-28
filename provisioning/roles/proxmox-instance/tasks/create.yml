@@ -1,5 +1,4 @@
-- include_tasks: lxc.yml
-  when: instance_type == "lxc"
+- include_tasks: "{{ instance_type }}.yml"
 
 - name: Wait until instance is queryable
   ansible.builtin.uri:

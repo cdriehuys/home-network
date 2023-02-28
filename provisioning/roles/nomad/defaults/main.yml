@@ -8,6 +8,6 @@ nomad_binary_dir: "{{ nomad_install_dir }}/bin"
 nomad_config_dir: /etc/nomad.d
 nomad_data_dir: "{{ nomad_install_dir }}/data"
 
-nomad_mode: agent
+nomad_mode: client
 nomad_user: nomad
-nomad_operator: "{% if nomad_mode == 'server' %}root{% else %}{{ nomad_user }}{% endif %}"
+nomad_operator: "{% if nomad_mode == 'server' %}{{ nomad_user }}{% else %}root{% endif %}"

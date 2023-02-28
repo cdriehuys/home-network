@@ -39,7 +39,7 @@
       original_user: root
       original_password: abcde
 
-- name: Configure Nomad
+- name: Install Nomad node prerequisites
   hosts: nomad
   remote_user: ansible
 
@@ -50,5 +50,19 @@
         key_sync_url: "{{ authorized_keys_url }}"
     - role: consul
       consul_mode: agent
+
+- name: Provision Nomad servers
+  hosts: nomad_servers
+  remote_user: ansible
+
+  roles:
     - role: nomad
       nomad_mode: server
+
+- name: Provision Nomad client agents
+  hosts: nomad_clients
+  remote_user: ansible
+
+  roles:
+    - role: nomad
+      nomad_mode: client

@@ -77,6 +77,27 @@
   notify:
     - Reload Nomad
 
+- name: Upload client config file
+  become: true
+  ansible.builtin.template:
+    dest: "{{ nomad_config_dir }}/client.hcl"
+    group: "{{ nomad_operator }}"
+    mode: '640'
+    owner: "{{ nomad_operator }}"
+    src: client.hcl
+  when: nomad_mode == "client"
+  notify:
+    - Reload Nomad
+
+- name: Remove client config file from non-clients
+  become: true
+  ansible.builtin.file:
+    path: "{{ nomad_config_dir }}/client.hcl"
+    state: absent
+  when: nomad_mode != "client"
+  notify:
+    - Reload Nomad
+
 - name: Upload server config file
   become: true
   ansible.builtin.template:
@@ -86,6 +107,15 @@
     owner: "{{ nomad_operator }}"
     src: server.hcl
   when: nomad_mode == "server"
+  notify:
+    - Reload Nomad
+
+- name: Remove server config file from non-servers
+  become: true
+  ansible.builtin.file:
+    path: "{{ nomad_config_dir }}/server.hcl"
+    state: absent
+  when: nomad_mode != "server"
   notify:
     - Reload Nomad
 

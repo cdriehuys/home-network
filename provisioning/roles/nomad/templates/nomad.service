@@ -18,7 +18,7 @@ User={{ nomad_operator }}
 Group={{ nomad_operator }}
 
 ExecReload=/bin/kill -HUP $MAINPID
-ExecStart={{ nomad_binary_dir }}/nomad agent -config {{ nomad_config_dir }}
+ExecStart={{ nomad_binary_dir }}/nomad agent -config={{ nomad_config_dir }}
 KillMode=process
 KillSignal=SIGINT
 LimitNOFILE=65536
