@@ -11,23 +11,23 @@
   roles:
     - role: proxmox-instance
       action: create
-      instance_hostname: consul1
+      instance_hostname: nomad1
       instance_password: abcde
       instance_type: lxc
     - role: proxmox-instance
       action: create
-      instance_hostname: consul2
+      instance_hostname: nomad2
       instance_password: abcde
       instance_type: lxc
     - role: proxmox-instance
       action: create
-      instance_hostname: consul3
+      instance_hostname: nomad3
       instance_password: abcde
       instance_type: lxc
 
 - name: Create admin users
   gather_facts: false
-  hosts: consul
+  hosts: nomad
   # We need to attempt a login with the admin user to check if these tasks need
   # to run. In order to do that, we need to be able to handle an unreachable
   # host.
@@ -39,14 +39,16 @@
       original_user: root
       original_password: abcde
 
-- name: Configure Consul
-  hosts: consul
+- name: Configure Nomad
+  hosts: nomad
   remote_user: ansible
 
   roles:
-    - role: ssh-harden
+    - ssh-harden
     - role: key-sync
       vars:
         key_sync_url: "{{ authorized_keys_url }}"
     - role: consul
-      consul_mode: server
+      consul_mode: agent
+    - role: nomad
+      nomad_mode: server

@@ -1,4 +1,10 @@
 ---
+- name: Install curl
+  become: true
+  ansible.builtin.package:
+    name: curl
+    state: present
+
 - name: Create script to pull keys
   become: true
   ansible.builtin.copy:

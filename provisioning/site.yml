@@ -3,3 +3,6 @@
 
 - name: Consul
   ansible.builtin.import_playbook: consul.yml
+
+- name: Nomad
+  ansible.builtin.import_playbook: nomad.yml

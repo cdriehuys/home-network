@@ -1,0 +1,5 @@
+- name: Reload Nomad
+  become: true
+  ansible.builtin.service:
+    name: nomad
+    state: reloaded

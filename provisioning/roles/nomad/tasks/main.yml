@@ -1,0 +1,113 @@
+- name: Install prerequisites
+  become: true
+  ansible.builtin.package:
+    name: unzip
+    state: present
+
+- name: Create nomad user
+  become: true
+  ansible.builtin.user:
+    create_home: false
+    name: "{{ nomad_user }}"
+  when: nomad_mode == 'server'
+
+- name: Create install directory
+  become: true
+  ansible.builtin.file:
+    group: "{{ nomad_operator }}"
+    owner: "{{ nomad_operator }}"
+    path: "{{ nomad_install_dir }}"
+    state: directory
+    mode: '755'
+
+- name: Create binary directory
+  become: true
+  ansible.builtin.file:
+    group: "{{ nomad_operator }}"
+    owner: "{{ nomad_operator }}"
+    path: "{{ nomad_binary_dir }}"
+    state: directory
+    mode: '755'
+
+- name: Create config directory
+  become: true
+  ansible.builtin.file:
+    group: "{{ nomad_operator }}"
+    owner: "{{ nomad_operator }}"
+    path: "{{ nomad_config_dir }}"
+    state: directory
+    mode: '750'
+
+- name: Create data directory
+  become: true
+  ansible.builtin.file:
+    group: "{{ nomad_operator }}"
+    owner: "{{ nomad_operator }}"
+    path: "{{ nomad_data_dir }}"
+    state: directory
+    mode: '755'
+
+- name: Download installer
+  become: true
+  ansible.builtin.get_url:
+    checksum: "{{ nomad_checksum }}"
+    dest: /opt/{{ nomad_archive }}
+    url: https://releases.hashicorp.com/nomad/{{ nomad_version }}/{{ nomad_archive }}
+
+- name: Unzip application
+  become: true
+  ansible.builtin.unarchive:
+    dest: "{{ nomad_binary_dir }}"
+    group: "{{ nomad_operator }}"
+    include:
+      - nomad
+    mode: '755'
+    owner: "{{ nomad_operator }}"
+    remote_src: true
+    src: /opt/{{ nomad_archive }}
+
+- name: Upload agent config file
+  become: true
+  ansible.builtin.template:
+    dest: "{{ nomad_config_dir }}/nomad.hcl"
+    group: "{{ nomad_operator }}"
+    mode: '640'
+    owner: "{{ nomad_operator }}"
+    src: nomad.hcl
+  notify:
+    - Reload Nomad
+
+- name: Upload server config file
+  become: true
+  ansible.builtin.template:
+    dest: "{{ nomad_config_dir }}/server.hcl"
+    group: "{{ nomad_operator }}"
+    mode: '640'
+    owner: "{{ nomad_operator }}"
+    src: server.hcl
+  when: nomad_mode == "server"
+  notify:
+    - Reload Nomad
+
+- name: Upload systemd unit file
+  become: true
+  ansible.builtin.template:
+    dest: /etc/systemd/system/nomad.service
+    group: root
+    mode: '644'
+    owner: root
+    src: nomad.service
+  register: nomad_unit_file
+
+- name: Pick up unit file changes
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: nomad_unit_file.changed
+
+- name: Start and enable nomad
+  become: true
+  ansible.builtin.service:
+    enabled: true
+    name: nomad
+    state: started
