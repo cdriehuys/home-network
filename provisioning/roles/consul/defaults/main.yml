@@ -1,7 +1,15 @@
-consul_architecture: linux_amd64
+consul_arch_map:
+  aarch64: arm64
+  x86_64: amd64
+
+consul_architecture: linux_{{ consul_arch_map[ansible_architecture] }}
 consul_archive: "consul_{{ consul_version }}_{{ consul_architecture }}.zip"
 consul_version: "1.15.0"
-consul_checksum: sha256:62a358ff2c3c08d19f15a92ea3130b05b547ab5a767ae13454eab7655a718c24
+
+consul_checksums:
+  linux_amd64: sha256:62a358ff2c3c08d19f15a92ea3130b05b547ab5a767ae13454eab7655a718c24
+  linux_arm64: sha256:2dde0e0d9055baa5eb66ebfe9ca81c34ca8e405fb2e8ff61315c0e2aa12c6d7d
+consul_checksum: "{{ consul_checksums[consul_architecture] }}"
 
 consul_install_dir: /opt/consul
 consul_binary_dir: "{{ consul_install_dir }}/bin"

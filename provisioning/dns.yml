@@ -31,6 +31,8 @@
           --accept-dns=false
           --advertise-exit-node
           --advertise-routes=192.168.1.0/24
+    - role: consul
+      consul_mode: agent
 
 - name: Provision DNS
   hosts: piholes
@@ -39,6 +41,12 @@
   serial: 1
 
   remote_user: ansible
+
+  vars:
+    pihole_dnsmasq_custom_files:
+      - name: 10-consul.conf
+        content: |
+          server=/consul/127.0.0.1#8600
 
   roles:
     - pi-hole

@@ -31,7 +31,17 @@
     group: pihole
     mode: "644"
     owner: pihole
-    src: custom.list
+    src: custom.list.j2
+
+- name: Upload custom dnsmasq config
+  become: true
+  ansible.builtin.copy:
+    content: "{{ item.content }}"
+    dest: /etc/dnsmasq.d/{{ item.name }}
+    mode: "644"
+  loop: "{{ pihole_dnsmasq_custom_files }}"
+  notify:
+    - reload pihole
 
 - name: Download Pi-hole installer
   become: true

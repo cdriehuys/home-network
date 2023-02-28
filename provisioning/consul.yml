@@ -49,4 +49,5 @@
       vars:
         key_sync_url: "{{ authorized_keys_url }}"
     - role: consul
+      consul_domain: "consul.{{ local_domain }}"
       consul_mode: server
