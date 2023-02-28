@@ -1,0 +1,5 @@
+ansible==7.1.0
+jmespath==1.0.1
+proxmoxer==2.0.1
+python-nomad==1.5.0
+requests==2.28.2

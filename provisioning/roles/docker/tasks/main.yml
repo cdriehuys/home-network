@@ -1,56 +1,54 @@
 ---
 - name: Install Docker prerequisites
   become: true
-  package:
+  ansible.builtin.package:
     name:
-      - apt-transport-https
       - ca-certificates
       - curl
-      - gnupg-agent
-      - software-properties-common
-    state: latest
+      - gnupg
+      - lsb-release
+    state: present
 
-- name: Add Docker GPG key
+- name: Create apt keyrings directory
   become: true
-  apt_key:
-    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+  ansible.builtin.file:
+    mode: '755'
+    path: /etc/apt/keyrings
+    state: directory
+
+- name: Download Docker GPG key
+  become: true
+  ansible.builtin.get_url:
+    dest: /etc/apt/keyrings/docker.gpg_armored
+    force: true
+    mode: '644'
     url: https://download.docker.com/linux/debian/gpg
+  register: docker_gpg_download
+
+- name: Add Docker GPG key to apt keyring
+  become: true
+  ansible.builtin.shell: gpg --dearmor -o /etc/apt/keyrings/docker.gpg < /etc/apt/keyrings/docker.gpg_armored
+  args:
+    # We want to run the command only if a new GPG key was downloaded or if the
+    # unarmored key doesn't exist.
+    creates: "{{ omit if docker_gpg_download.changed else '/etc/apt/keyrings/docker.gpg'}}"
 
 - name: Add Docker apt repository
   become: true
-  apt_repository:
-    repo: deb [arch=armhf] https://download.docker.com/linux/raspbian {{ ansible_distribution_release }} stable
+  ansible.builtin.apt_repository:
+    repo: deb [arch={{ deb_architecture[ansible_architecture] }} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/{{ ansible_system | lower }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
     state: present
+  vars:
+    deb_architecture:
+      x86_64: amd64
 
 - name: Install Docker
   become: true
-  apt:
-    # Docker recommends the `aufs-dkms` package which does not build on
-    # Raspbian.
-    install_recommends: false
+  ansible.builtin.package:
     name:
+      - docker-buildx-plugin
+      - docker-compose-plugin
       - docker-ce
       - docker-ce-cli
       - containerd.io
     state: present
-
-- name: Add remote user to `docker` group
-  become: true
-  user:
-    append: true
-    groups: docker
-    name: "{{ ansible_user_id }}"
-
-- name: Install dependencies for Ansible to use pip
-  become: true
-  package:
-    name:
-      - python-pip
-      - python-setuptools
-    state: present
-
-- name: Install `docker` python module
-  become: true
-  pip:
-    name: docker
-    state: latest

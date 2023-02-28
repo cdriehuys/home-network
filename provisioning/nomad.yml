@@ -64,5 +64,6 @@
   remote_user: ansible
 
   roles:
+    - docker
     - role: nomad
       nomad_mode: client

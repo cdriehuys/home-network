@@ -2,19 +2,20 @@ FROM python:3
 
 WORKDIR /opt/provisioning
 
-ENV ANSIBLE_HOST_KEY_CHECKING=False
+ENV ANSIBLE_HOST_KEY_CHECKING=False \
+  PIP_NO_CACHE_DIR=off
 
 # Need sshpass to connect over SSH with raw passwords. This is used to connect
 # as the default user for an OS in order to harden it.
 RUN apt-get update && \
-  apt-get install -y sshpass && \
-  pip install --upgrade pip && \
-  pip install 'ansible==7.1.0' 'jmespath==1.0.1' 'proxmoxer==2.0.1' 'requests==2.28.2'
+  apt-get install -y sshpass
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "site.yml" ]
 
-COPY requirements.yml /tmp/requirements.yml
-RUN ansible-galaxy install -r /tmp/requirements.yml && \
-    rm /tmp/requirements.yml
+COPY requirements.txt requirements.yml /tmp/
+RUN pip install --upgrade pip && \
+  pip install -r /tmp/requirements.txt &&\
+  ansible-galaxy install -r /tmp/requirements.yml && \
+  rm /tmp/requirements.txt /tmp/requirements.yml
