@@ -47,6 +47,8 @@
     - role: unbound
       unbound_access_controls:
         - "192.168.1.0/24 allow"
+        # Tailscale
+        - "100.64.0.0/10 allow"
       unbound_local_domain: "{{ local_domain }}"
     - role: unbound-consul
       unbound_consul_services:

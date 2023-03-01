@@ -68,6 +68,12 @@
       - name: home-assistant
         path: /nfs/nomad/home-assistant
         read_only: false
+      - name: traefik-certs-production
+        path: /nfs/nomad/traefik-certs/production
+        read_only: false
+      - name: traefik-certs-staging
+        path: /nfs/nomad/traefik-certs/production
+        read_only: false
 
   pre_tasks:
     - name: Install NFS packages
@@ -96,10 +102,3 @@
     - docker
     - role: nomad
       nomad_mode: client
-      nomad_volumes:
-        - name: home-assistant
-          path: /nfs/nomad/home-assistant
-          read_only: false
-        - name: traefik
-          path: /nfs/nomad/traefik
-          read_only: false

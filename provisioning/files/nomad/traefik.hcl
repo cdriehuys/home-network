@@ -10,15 +10,19 @@ job "traefik" {
                 static = 80
             }
 
+            port "https" {
+                static = 443
+            }
+
             port "api" {
                 static = 8080
             }
         }
 
-        volume "traefik" {
+        volume "traefik-certs" {
             type = "host"
             read_only = false
-            source = "traefik"
+            source = "traefik-certs-production"
         }
 
         service {
@@ -46,7 +50,7 @@ job "traefik" {
             }
 
             volume_mount {
-                volume = "traefik"
+                volume = "traefik-certs"
                 destination = "/etc/traefik/acme"
                 read_only = false
             }
@@ -54,8 +58,10 @@ job "traefik" {
             template {
                 data = <<EOF
 entryPoints:
-    http:
+    web:
         address: ":80"
+    websecure:
+        address: ":443"
     traefik:
         address: ":8080"
 
@@ -72,9 +78,6 @@ providers:
             address: 127.0.0.1:8500
             scheme: http
 
-    file:
-        directory: /etc/traefik/dynamic
-
 certificatesResolvers:
     lan:
         acme:
@@ -90,7 +93,6 @@ EOF
                 data = <<EOF
 {{ with secret "kv/data/cloudflare" }}
 CF_DNS_API_TOKEN={{ .Data.data.api_token }}
-CF_ZONE_API_TOKEN={{ .Data.data.zone_id }}
 {{ end }}
 EOF
 

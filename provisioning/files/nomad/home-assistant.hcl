@@ -22,7 +22,8 @@ job "home-assistant" {
 
                 tags = [
                     "traefik.enable=true",
-                    "traefik.http.routers.http.rule=Host(`homeassistant.proxy.lan.qidux.com`)",
+                    "traefik.http.routers.homeassistant.rule=Host(`homeassistant.proxy.lan.qidux.com`)",
+                    "traefik.http.routers.homeassistant.tls.certresolver=lan",
                     "traefik.http.services.homeassistant.loadbalancer.server.port=8123",
                 ]
 
@@ -63,13 +64,17 @@ homeassistant:
   currency: USD
   language: en
   country: US
-  internal_url: http://192.168.1.176:8123
+  internal_url: https://homeassistant.proxy.lan.qidux.com
   external_url: https://homeassistant.qidux.com
 
 http:
   use_x_forwarded_for: true
   trusted_proxies:
+    # Internal network
     - 192.168.1.0/24
+    # Localhost for cloudflare tunnel
+    - 127.0.0.1
+    - "::1"
 
 # Loads default set of integrations. Do not remove.
 default_config:
@@ -98,6 +103,25 @@ longitude: {{.Data.data.longitude}}
 {{end}}
 EOF
                 destination = "secrets/secrets.yaml"
+            }
+        }
+
+        task "cloudflare-tunnel" {
+            driver = "docker"
+
+            config {
+                image = "cloudflare/cloudflared:latest"
+                network_mode = "host"
+
+                args = ["tunnel", "--no-autoupdate", "run", "home-assistant"]
+            }
+
+            template {
+                data = <<EOF
+TUNNEL_TOKEN={{ with secret "kv/data/cloudflare/tunnels/home-assistant" }}{{ .Data.data.token }}{{ end }}
+EOF
+                destination = "secrets/tunnel.env"
+                env = true
             }
         }
     }
