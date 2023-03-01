@@ -7,6 +7,12 @@
     - unbound-console.ctmpl
     - unbound-consul.ctmpl
 
+- name: Remove default config files
+  become: true
+  ansible.builtin.file:
+    path: /etc/unbound/unbound.conf.d/resolvconf_resolvers.conf
+    state: absent
+
 - name: Upload config
   become: true
   ansible.builtin.template:
