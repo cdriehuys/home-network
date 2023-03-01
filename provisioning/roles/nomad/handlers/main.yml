@@ -3,3 +3,9 @@
   ansible.builtin.service:
     name: nomad
     state: reloaded
+
+- name: Restart Nomad
+  become: true
+  ansible.builtin.service:
+    name: nomad
+    state: restarted

@@ -1,0 +1,19 @@
+consul_template_arch_map:
+  aarch64: arm64
+  x86_64: amd64
+
+consul_template_architecture: linux_{{ consul_template_arch_map[ansible_architecture] }}
+consul_template_archive: "consul-template_{{ consul_template_version }}_{{ consul_template_architecture }}.zip"
+consul_template_version: "0.30.0"
+
+consul_template_checksums:
+  linux_amd64: sha256:c78db0f0eecc4d314a5130e3b4c8bd17086c6cd9080c4caf69c606de67cbe212
+  linux_arm64: sha256:2bffd21b77d65704b467f212df0553e73dd5158ca2a0aaa29d7ca39c76f43fc3
+consul_template_checksum: "{{ consul_template_checksums[consul_template_architecture] }}"
+
+consul_template_install_dir: /opt/consul-template
+consul_template_binary_dir: "{{ consul_template_install_dir }}/bin"
+consul_template_config_dir: /etc/consul-template.d
+consul_template_data_dir: "{{ consul_template_install_dir }}/data"
+
+consul_template_mode: agent

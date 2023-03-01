@@ -1,0 +1,2 @@
+unbound_consul_services: []
+unbound_consul_config: "/etc/consul-template.d/unbound-consul.hcl"

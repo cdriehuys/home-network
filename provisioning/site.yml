@@ -4,5 +4,8 @@
 - name: Consul
   ansible.builtin.import_playbook: consul.yml
 
+- name: Vault
+  ansible.builtin.import_playbook: vault.yml
+
 - name: Nomad
   ansible.builtin.import_playbook: nomad.yml

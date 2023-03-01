@@ -1,0 +1,21 @@
+- name: Install unbound
+  become: true
+  ansible.builtin.package:
+    name: unbound
+    state: present
+
+- name: Upload config
+  become: true
+  ansible.builtin.template:
+    dest: /etc/unbound/unbound.conf
+    mode: '644'
+    src: unbound.conf
+  notify:
+    - Restart unbound
+
+- name: Start and enable unbound
+  become: true
+  ansible.builtin.service:
+    enabled: true
+    name: unbound
+    state: started

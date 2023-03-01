@@ -11,3 +11,5 @@ nomad_data_dir: "{{ nomad_install_dir }}/data"
 nomad_mode: client
 nomad_user: nomad
 nomad_operator: "{% if nomad_mode == 'server' %}{{ nomad_user }}{% else %}root{% endif %}"
+
+nomad_volumes: []

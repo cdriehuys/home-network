@@ -1,7 +1,7 @@
 ---
 - name: Create admin users
   gather_facts: false
-  hosts: piholes
+  hosts: dns
   # We need to attempt a login with the admin user to check if these tasks need
   # to run. In order to do that, we need to be able to handle an unreachable
   # host.
@@ -14,7 +14,7 @@
       original_password: raspberry
 
 - name: Provision servers
-  hosts: piholes
+  hosts: dns
 
   remote_user: ansible
 
@@ -33,20 +33,22 @@
           --advertise-routes=192.168.1.0/24
     - role: consul
       consul_mode: agent
+    - consul-template
 
 - name: Provision DNS
-  hosts: piholes
+  hosts: dns
   # Only upgrade one-at-a-time so that we always have at least one nameserver
   # available.
   serial: 1
 
   remote_user: ansible
 
-  vars:
-    pihole_dnsmasq_custom_files:
-      - name: 10-consul.conf
-        content: |
-          server=/consul/127.0.0.1#8600
-
   roles:
-    - pi-hole
+    - role: unbound
+      unbound_access_controls:
+        - "192.168.1.0/24 allow"
+      unbound_local_domain: "{{ local_domain }}"
+    - role: unbound-consul
+      unbound_consul_services:
+        - name: traefik
+          domain: proxy.{{ local_domain }}

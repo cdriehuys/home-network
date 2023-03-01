@@ -63,7 +63,43 @@
   hosts: nomad_clients
   remote_user: ansible
 
+  vars:
+    nomad_volumes:
+      - name: home-assistant
+        path: /nfs/nomad/home-assistant
+        read_only: false
+
+  pre_tasks:
+    - name: Install NFS packages
+      become: true
+      ansible.builtin.package:
+        name: nfs-common
+        state: present
+    - name: Mount NAS
+      become: true
+      ansible.posix.mount:
+        boot: true
+        fstype: nfs
+        opts: auto,nofail,noatime,nolock,intr,tcp,actimeo=1800,x-systemd.automount
+        path: /nfs/nomad
+        src: freenas.lan.qidux.com:/mnt/Primary/nomad
+        state: mounted
+    - name: Ensure Nomad volume directories exist
+      become: true
+      ansible.builtin.file:
+        mode: "755"
+        path: "{{ item.path }}"
+        state: directory
+      loop: "{{ nomad_volumes }}"
+
   roles:
     - docker
     - role: nomad
       nomad_mode: client
+      nomad_volumes:
+        - name: home-assistant
+          path: /nfs/nomad/home-assistant
+          read_only: false
+        - name: traefik
+          path: /nfs/nomad/traefik
+          read_only: false

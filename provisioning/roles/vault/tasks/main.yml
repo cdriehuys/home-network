@@ -1,0 +1,112 @@
+- name: Install prerequisites
+  become: true
+  ansible.builtin.package:
+    name: unzip
+    state: present
+
+- name: Create vault user
+  become: true
+  ansible.builtin.user:
+    create_home: false
+    name: vault
+
+- name: Create install directory
+  become: true
+  ansible.builtin.file:
+    group: vault
+    owner: vault
+    path: "{{ vault_install_dir }}"
+    state: directory
+    mode: '755'
+
+- name: Create binary directory
+  become: true
+  ansible.builtin.file:
+    group: vault
+    owner: vault
+    path: "{{ vault_binary_dir }}"
+    state: directory
+    mode: '755'
+
+- name: Create config directory
+  become: true
+  ansible.builtin.file:
+    group: vault
+    owner: vault
+    path: "{{ vault_config_dir }}"
+    state: directory
+    mode: '750'
+
+- name: Download installer
+  become: true
+  ansible.builtin.get_url:
+    checksum: "{{ vault_checksum }}"
+    dest: /opt/{{ vault_archive }}
+    url: https://releases.hashicorp.com/vault/{{ vault_version }}/{{ vault_archive }}
+
+- name: Unzip application
+  become: true
+  ansible.builtin.unarchive:
+    dest: "{{ vault_binary_dir }}"
+    group: vault
+    include:
+      - vault
+    mode: '755'
+    owner: vault
+    remote_src: true
+    src: /opt/{{ vault_archive }}
+
+- name: Set Vault capabilities
+  become: true
+  community.general.capabilities:
+    capability: cap_ipc_lock=+ep
+    path: "{{ vault_binary_dir }}/vault"
+    state: present
+
+
+- name: Upload client config file
+  become: true
+  ansible.builtin.template:
+    dest: "{{ vault_config_dir }}/vault.hcl"
+    group: vault
+    mode: '640'
+    owner: vault
+    src: vault.hcl
+  when: vault_mode == "client"
+  notify:
+    - Reload Vault
+
+- name: Upload server config file
+  become: true
+  ansible.builtin.template:
+    dest: "{{ vault_config_dir }}/server.hcl"
+    group: vault
+    mode: '640'
+    owner: vault
+    src: server.hcl
+  when: vault_mode == "server"
+  notify:
+    - Reload Vault
+
+- name: Upload systemd unit file
+  become: true
+  ansible.builtin.template:
+    dest: /etc/systemd/system/vault.service
+    group: root
+    mode: '644'
+    owner: root
+    src: vault.service
+  register: vault_unit_file
+
+- name: Pick up unit file changes
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: vault_unit_file.changed
+
+- name: Start and enable Vault
+  become: true
+  ansible.builtin.service:
+    enabled: true
+    name: vault
+    state: "{{ 'restarted' if vault_unit_file.changed else 'started' }}"

@@ -1,0 +1,5 @@
+- name: Reload Vault
+  become: true
+  ansible.builtin.service:
+    name: vault
+    state: reloaded

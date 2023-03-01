@@ -15,6 +15,12 @@ job "traefik" {
             }
         }
 
+        volume "traefik" {
+            type = "host"
+            read_only = false
+            source = "traefik"
+        }
+
         service {
             name = "traefik"
 
@@ -35,31 +41,61 @@ job "traefik" {
                 network_mode = "host"
 
                 volumes = [
-                    "local/traefik.toml:/etc/traefik/traefik.toml"
+                    "local/traefik.yml:/etc/traefik/traefik.yml"
                 ]
+            }
+
+            volume_mount {
+                volume = "traefik"
+                destination = "/etc/traefik/acme"
+                read_only = false
             }
 
             template {
                 data = <<EOF
-[entryPoints]
-    [entryPoints.http]
-    address = ":80"
-    [entryPoints.traefik]
-    address = ":8080"
+entryPoints:
+    http:
+        address: ":80"
+    traefik:
+        address: ":8080"
 
-[api]
-    dashboard = true
-    insecure = true
+api:
+    dashboard: true
+    insecure: true
 
-[providers.consulCatalog]
-    prefix = "traefik"
-    exposedByDefault = false
+providers:
+    consulCatalog:
+        prefix: traefik
+        exposedByDefault: false
 
-    [providers.consulCatalog.endpoint]
-        address = "127.0.0.1:8500"
-        scheme = "http"
+        endpoint:
+            address: 127.0.0.1:8500
+            scheme: http
+
+    file:
+        directory: /etc/traefik/dynamic
+
+certificatesResolvers:
+    lan:
+        acme:
+            email: chathan@driehuys.com
+            storage: /etc/traefik/acme/acme.json
+            dnsChallenge:
+                provider: cloudflare
 EOF
-                destination = "local/traefik.toml"
+                destination = "local/traefik.yml"
+            }
+
+            template {
+                data = <<EOF
+{{ with secret "kv/data/cloudflare" }}
+CF_DNS_API_TOKEN={{ .Data.data.api_token }}
+CF_ZONE_API_TOKEN={{ .Data.data.zone_id }}
+{{ end }}
+EOF
+
+                destination = "secrets/dns.env"
+                env = true
             }
 
             resources {

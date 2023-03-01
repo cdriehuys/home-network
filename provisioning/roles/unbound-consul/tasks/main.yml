@@ -1,0 +1,38 @@
+- name: Remove typoed config file
+  become: true
+  ansible.builtin.file:
+    path: "/etc/consul-template.d/{{ item }}"
+    state: absent
+  loop:
+    - unbound-console.ctmpl
+    - unbound-consul.ctmpl
+
+- name: Upload config
+  become: true
+  ansible.builtin.template:
+    dest: "{{ unbound_consul_config }}"
+    mode: "644"
+    src: unbound-consul.hcl
+  register: unbound_consul_template
+
+- name: Remove typoed service file
+  become: true
+  ansible.builtin.file:
+    path: /etc/systemd/system/consul-unbound.service
+    state: absent
+
+- name: Create systemd service
+  become: true
+  ansible.builtin.template:
+    dest: /etc/systemd/system/unbound-consul.service
+    mode: "644"
+    src: unbound-consul.service
+  register: unbound_consul_service
+
+- name: Start and enable template service
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: "{{ unbound_consul_service.changed }}"
+    enabled: true
+    name: unbound-consul
+    state: "{{ 'restarted' if unbound_consul_template.changed or unbound_consul_service.changed else 'started' }}"

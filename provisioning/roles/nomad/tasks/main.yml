@@ -87,7 +87,7 @@
     src: client.hcl
   when: nomad_mode == "client"
   notify:
-    - Reload Nomad
+    - Restart Nomad
 
 - name: Remove client config file from non-clients
   become: true
@@ -140,4 +140,4 @@
   ansible.builtin.service:
     enabled: true
     name: nomad
-    state: started
+    state: "{{ 'restarted' if nomad_unit_file.changed else 'started' }}"

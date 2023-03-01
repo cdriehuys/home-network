@@ -1,0 +1,43 @@
+- name: Install prerequisites
+  become: true
+  ansible.builtin.package:
+    name: unzip
+    state: present
+
+- name: Create install directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ consul_template_install_dir }}"
+    state: directory
+    mode: '755'
+
+- name: Create binary directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ consul_template_binary_dir }}"
+    state: directory
+    mode: '755'
+
+- name: Create config directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ consul_template_config_dir }}"
+    state: directory
+    mode: '750'
+
+- name: Download installer
+  become: true
+  ansible.builtin.get_url:
+    checksum: "{{ consul_template_checksum }}"
+    dest: /opt/{{ consul_template_archive }}
+    url: https://releases.hashicorp.com/consul-template/{{ consul_template_version }}/{{ consul_template_archive }}
+
+- name: Unzip application
+  become: true
+  ansible.builtin.unarchive:
+    dest: "{{ consul_template_binary_dir }}"
+    include:
+      - consul-template
+    mode: '755'
+    remote_src: true
+    src: /opt/{{ consul_template_archive }}

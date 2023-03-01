@@ -17,6 +17,9 @@ After=consul.service
 User={{ nomad_operator }}
 Group={{ nomad_operator }}
 
+# Provide token for vault integration.
+Environment=VAULT_TOKEN={{ nomad_vault_token }}
+
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStart={{ nomad_binary_dir }}/nomad agent -config={{ nomad_config_dir }}
 KillMode=process

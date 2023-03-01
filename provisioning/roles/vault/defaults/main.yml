@@ -1,0 +1,12 @@
+vault_architecture: linux_amd64
+vault_archive: "vault_{{ vault_version }}_{{ vault_architecture }}.zip"
+vault_version: "1.12.3"
+
+vault_checksum: sha256:f4825bad06e77687b407eff7423acb9238adfd545d7345f2a0bb9e81b0c4b1eb
+
+vault_install_dir: /opt/vault
+vault_binary_dir: "{{ vault_install_dir }}/bin"
+vault_config_dir: /etc/vault.d
+vault_data_dir: "{{ vault_install_dir }}/data"
+
+vault_mode: agent

@@ -1,0 +1,63 @@
+- id: '1677357436254'
+  alias: Turn Lights on at Sunset
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: -00:30
+  condition:
+  - condition: device
+    device_id: afa455c2986c54d9d9d7b7eb7b715ee1
+    domain: device_tracker
+    entity_id: device_tracker.pixel_5
+    type: is_home
+  action:
+  - service: light.turn_on
+    data:
+      transition: 1
+    target:
+      area_id:
+      - bedroom
+      - dining_room
+      - living_room
+      - office
+  mode: single
+- id: '1677537217091'
+  alias: Coming home
+  description: ''
+  trigger:
+  - platform: zone
+    entity_id: person.chathan
+    zone: zone.home
+    event: enter
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.coming_home
+    metadata: {}
+  mode: single
+- id: '1677538207379'
+  alias: Leaving home
+  description: ''
+  trigger:
+  - platform: zone
+    entity_id: person.chathan
+    zone: zone.home
+    event: leave
+  condition: []
+  action:
+  - service: light.turn_off
+    data:
+      transition: 1
+    target:
+      area_id:
+      - bedroom
+      - dining_room
+      - living_room
+      - office
+  - service: homeassistant.turn_off
+    data: {}
+    target:
+      device_id: 294edeee8ab7b2e8b1f98b92f53f9e26
+  mode: single
