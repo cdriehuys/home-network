@@ -1,0 +1,14 @@
+[Unit]
+Description=Update block lists for unbound
+Requires=network-online.target
+After=network-online.target
+Wants=unbound-update-block-list.timer
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/usr/local/bin/update-unbound-block-list.sh /etc/unbound/unbound.conf.d/block-list.conf
+
+[Install]
+WantedBy=multi-user.target

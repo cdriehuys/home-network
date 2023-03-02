@@ -4,6 +4,17 @@
     name: unbound
     state: present
 
+- name: Upload helper scripts
+  become: true
+  ansible.builtin.copy:
+    dest: /usr/local/bin/{{ item }}
+    mode: "755"
+    remote_src: false
+    src: "{{ item }}"
+  loop:
+    - fetch-hosts-file-as-unbound-config.sh
+    - update-unbound-block-list.sh
+
 - name: Upload config
   become: true
   ansible.builtin.template:
@@ -12,6 +23,25 @@
     src: unbound.conf
   notify:
     - Restart unbound
+
+- name: Upload service files for ad block update
+  become: true
+  ansible.builtin.template:
+    dest: /etc/systemd/system/{{ item }}
+    mode: "644"
+    src: "{{ item }}"
+  loop:
+    - unbound-update-block-list.service
+    - unbound-update-block-list.timer
+  register: ad_block_services
+
+- name: Start timer to update block lists
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: "{{ ad_block_services.changed }}"
+    enabled: true
+    name: unbound-update-block-list.timer
+    state: started
 
 - name: Start and enable unbound
   become: true
