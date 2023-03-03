@@ -21,6 +21,8 @@ Default | Default network | 192.168.1.0/24 | -
 * 2 Raspberry Pi 4s
     * Pi-hole DNS
     * Tailscale exit nodes
+* 1 Proxmox node
+* 1 NAS
 
 [provisioning]: ./provisioning/README.md
 

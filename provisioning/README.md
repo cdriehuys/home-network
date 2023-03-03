@@ -13,25 +13,21 @@ everything.
 
 ## Run It
 
-We invoke Ansible inside a docker container to ensure we have the same
-dependencies every time and to reduce the requirements on the host machine to
-just Docker:
+Open the project in the defined VS Code dev container. This ensures that the
+necessary environment is set up.
 
 ```bash
 # This has to be done once.
 echo "$VAULT_PASSWORD" > .vault_password
 
 # Run it!
-docker compose run ansible
+ansible-playbook -i inventory.yml
 
 # Run a specific playbook
-docker compose run ansible -- dns.yml
+ansible-playbook -i inventory.yml dns.yml
 
 # Run multiple playbooks
-docker compose run ansible -- dns.yml consul.yml
-
-# If editing the Docker image, don't forget the --build tag:
-docker compose run --build ansible
+ansible-playbook -i inventory.yml dns.yml consul.yml
 ```
 
 ## Prerequisites
