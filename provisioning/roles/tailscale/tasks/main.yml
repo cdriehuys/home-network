@@ -1,0 +1,22 @@
+- name: Add Tailscale package signing key
+  become: true
+  ansible.builtin.get_url:
+    dest: "{{ tailscale_signing_key_file }}"
+    mode: "644"
+    url: "{{ tailscale_signing_key_url }}"
+  register: tailscale_signing_key
+
+- name: Add Tailscale package repository
+  become: true
+  ansible.builtin.get_url:
+    dest: "{{ tailscale_apt_source_list_file }}"
+    mode: "644"
+    url: "{{ tailscale_apt_source_list_url }}"
+  register: tailscale_repo
+
+- name: Install Tailscale
+  become: true
+  ansible.builtin.apt:
+    name: tailscale
+    state: latest
+    update: "{{ tailscale_signing_key.changed or tailscale_repo.changed or omit }}"

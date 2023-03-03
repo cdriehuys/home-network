@@ -2,6 +2,12 @@ job "home-assistant" {
     datacenters = ["pve"]
     type = "service"
 
+    constraint {
+        attribute = "${meta.cluster}
+        operator = "=="
+        value = "compute"
+    }
+
     group "home-assistant" {
         network {
             port "http" { static = 8123 }

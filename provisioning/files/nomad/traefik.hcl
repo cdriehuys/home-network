@@ -2,6 +2,12 @@ job "traefik" {
     datacenters = ["pve"]
     type = "service"
 
+    constraint {
+        attribute = "${meta.cluster}
+        operator = "=="
+        value = "compute"
+    }
+
     group "traefik" {
         count = 1
 

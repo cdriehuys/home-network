@@ -1,0 +1,5 @@
+tailscale_signing_key_url: https://pkgs.tailscale.com/stable/debian/bullseye.noarmor.gpg
+tailscale_signing_key_file: /usr/share/keyrings/tailscale-archive-keyring.gpg
+
+tailscale_apt_source_list_url: https://pkgs.tailscale.com/stable/debian/bullseye.tailscale-keyring.list
+tailscale_apt_source_list_file: /etc/apt/sources.list.d/tailscale.list

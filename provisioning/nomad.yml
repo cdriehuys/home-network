@@ -102,3 +102,18 @@
     - docker
     - role: nomad
       nomad_mode: client
+      nomad_client_meta:
+        cluster: compute
+
+- name: Provision Nomad clients for DNS
+  hosts: dns
+  remote_user: ansible
+
+  roles:
+    - role: nomad
+      nomad_mode: client
+      nomad_client_meta:
+        cluster: dns
+      # Need raw exec for tailscale job since the isolation primitives aren't
+      # present on our Raspberry Pi machines.
+      nomad_enable_raw_exec: true
