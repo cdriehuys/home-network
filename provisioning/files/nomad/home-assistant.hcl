@@ -41,7 +41,8 @@ job "home-assistant" {
 
                 volumes = [
                     "local/configuration.yaml:/config/configuration.yaml",
-                    "secrets/secrets.yaml:/config/secrets.yaml"
+                    "secrets/secrets.yaml:/config/secrets.yaml",
+                    "secrets/service-account.json:/config/service-account.json",
                 ]
             }
 
@@ -90,6 +91,11 @@ tts:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+
+google_assistant:
+  project_id: !secret google_project_id
+  service_account: !include service-account.json
+  report_state: true
 EOF
                 destination = "local/configuration.yaml"
             }
@@ -101,8 +107,18 @@ elevation: {{.Data.data.elevation}}
 latitude: {{.Data.data.latitude}}
 longitude: {{.Data.data.longitude}}
 {{end}}
+
+{{with secret "kv/data/google/home-assistant"}}
+google_project_id: "{{ .Data.data.project_id }}"{{ end}}
 EOF
                 destination = "secrets/secrets.yaml"
+            }
+
+            template {
+                data = <<EOF
+{{with secret "kv/data/google/home-assistant"}}{{ .Data.data.service_account }}{{end}}
+EOF
+                destination = "secrets/service-account.json"
             }
         }
 
