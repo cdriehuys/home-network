@@ -3,7 +3,7 @@ job "home-assistant" {
     type = "service"
 
     constraint {
-        attribute = "${meta.cluster}
+        attribute = "${meta.cluster}"
         operator = "=="
         value = "compute"
     }

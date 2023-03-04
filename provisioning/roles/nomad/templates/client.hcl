@@ -18,7 +18,13 @@ client {
     {% endfor %}
 }
 
-plugin "docker" {}
+plugin "docker" {
+    config {
+        volumes {
+            enabled = true
+        }
+    }
+}
 {% if nomad_enable_raw_exec %}
 
 plugin "raw_exec" {

@@ -19,7 +19,7 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"hashicorp.terraform",
+				"hashicorp.hcl",
 				"patbenatar.advanced-new-file",
 				"redhat.ansible",
 			]

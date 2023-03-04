@@ -81,6 +81,7 @@
       ansible.builtin.package:
         name: nfs-common
         state: present
+
     - name: Mount NAS
       become: true
       ansible.posix.mount:
@@ -90,6 +91,17 @@
         path: /nfs/nomad
         src: freenas.lan.qidux.com:/mnt/Primary/nomad
         state: mounted
+
+    - name: Mount media
+      become: true
+      ansible.posix.mount:
+        boot: true
+        fstype: nfs
+        opts: auto,nofail,noatime,nolock,intr,tcp,actimeo=1800,x-systemd.automount
+        path: /nfs/media
+        src: freenas.lan.qidux.com:/mnt/Primary/Media
+        state: mounted
+
     - name: Ensure Nomad volume directories exist
       become: true
       ansible.builtin.file:
