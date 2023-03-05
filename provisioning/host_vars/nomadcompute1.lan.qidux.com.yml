@@ -1,0 +1,8 @@
+nomad_extra_config_files:
+  - name: zwave.hcl
+    content: |
+      client {
+        meta {
+          zwave_device = "/dev/serial/by-id/usb-Silicon_Labs_CP2102N_USB_to_UART_Bridge_Controller_04fbb2a60487ec1190c1e53719c2d21c-if00-port0"
+        }
+      }

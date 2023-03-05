@@ -119,6 +119,18 @@
   notify:
     - Reload Nomad
 
+- name: Upload extra client config files
+  become: true
+  ansible.builtin.copy:
+    content: "{{ item.content }}"
+    dest: "{{ nomad_config_dir }}/{{ item.name }}"
+    group: "{{ nomad_operator }}"
+    owner: "{{ nomad_operator }}"
+  when: nomad_extra_config_files is defined
+  loop: "{{ nomad_extra_config_files }}"
+  notify:
+    - Restart Nomad
+
 - name: Upload systemd unit file
   become: true
   ansible.builtin.template:

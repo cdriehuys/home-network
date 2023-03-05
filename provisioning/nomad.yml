@@ -74,6 +74,9 @@
       - name: traefik-certs-staging
         path: /nfs/nomad/traefik-certs/production
         read_only: false
+      - name: zwave-js-store
+        path: /nfs/nomad/zwave-js/store
+        read_only: false
 
   pre_tasks:
     - name: Install NFS packages
@@ -129,3 +132,7 @@
       # Need raw exec for tailscale job since the isolation primitives aren't
       # present on our Raspberry Pi machines.
       nomad_enable_raw_exec: true
+
+- name: Add z-wave configuration
+  hosts: nomadcompute1.lan.qidux.com
+  remote_user: ansible
