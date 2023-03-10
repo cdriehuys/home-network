@@ -10,3 +10,7 @@ vault_config_dir: /etc/vault.d
 vault_data_dir: "{{ vault_install_dir }}/data"
 
 vault_mode: agent
+
+# Some platforms require disabling mlock. See this article for more details:
+# https://support.hashicorp.com/hc/en-us/articles/115012787688-Vault-and-mlock-
+vault_disable_mlock: false

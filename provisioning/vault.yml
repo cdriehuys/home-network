@@ -48,3 +48,5 @@
       consul_mode: agent
     - role: vault
       vault_mode: server
+      # Disable mlock since it's not supported in our LXC configuration.
+      vault_disable_mlock: true
