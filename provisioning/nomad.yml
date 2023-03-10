@@ -144,7 +144,3 @@
       # Need raw exec for tailscale job since the isolation primitives aren't
       # present on our Raspberry Pi machines.
       nomad_enable_raw_exec: true
-
-- name: Add z-wave configuration
-  hosts: nomadcompute1.lan.qidux.com
-  remote_user: ansible

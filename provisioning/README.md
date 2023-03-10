@@ -45,3 +45,12 @@ set up its own provisioning user.
 * SD card flashed with Raspberry Pi OS Lite
 * SSH access enabled through the Raspberry Pi Imager software with the default
   username and password of `pi` and `raspberry`
+
+## Troubleshooting
+
+### SSH Authentication Failed
+
+The VS Code dev container connects to the SSH agent on the host to forward your
+keys. On Windows, this will be the WSL backend that Docker is run through rather
+than the SSH agent on the base Windows install. If you're seeing "Permission
+denied: public key", make sure that the SSH agent is running in WSL.

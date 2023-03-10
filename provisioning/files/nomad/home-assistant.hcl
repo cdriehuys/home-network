@@ -102,6 +102,26 @@ google_assistant:
   project_id: !secret google_project_id
   service_account: !include service-account.json
   report_state: true
+
+sensor:
+  - platform: rest
+    resource: http://bedmirror.lan.qidux.com:8080/display-state
+    name: Magic Mirror
+    unique_id: magic_mirror
+    json_attributes:
+      - on
+
+rest_command:
+  magic_mirror_on:
+    url: http://bedmirror.lan.qidux.com:8080/display-state
+    method: put
+    content_type: application/json
+    payload: '{"on": true}'
+  magic_mirror_off:
+    url: http://bedmirror.lan.qidux.com:8080/display-state
+    method: put
+    content_type: application/json
+    payload: '{"on": false}'
 EOF
                 destination = "local/configuration.yaml"
             }
