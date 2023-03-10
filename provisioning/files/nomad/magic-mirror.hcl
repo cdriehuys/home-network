@@ -112,6 +112,17 @@ let config = {
 			module: "clock",
 			position: "top_left"
 		},
+        {
+            module: "weather",
+            position: "top_right",
+            config: {
+                type: "hourly",
+                weatherProvider: "weathergov",
+                apiBase: "https://api.weather.gov/points/",
+                lat: "{{ with secret "secrets/home/location" }}{{ .Data.latitude }}{{ end }}",
+                lon: "{{ with secret "secrets/home/location" }}{{ .Data.longitude }}{{ end }}"
+            }
+        },
 		{
 			module: "calendar",
 			header: "US Holidays",
@@ -124,27 +135,7 @@ let config = {
 					}
 				]
 			}
-		},
-		{
-			module: "compliments",
-			position: "lower_third"
-		},
-		{
-			module: "newsfeed",
-			position: "bottom_bar",
-			config: {
-				feeds: [
-					{
-						title: "New York Times",
-						url: "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"
-					}
-				],
-				showSourceTitle: true,
-				showPublishDate: true,
-				broadcastNewsFeeds: true,
-				broadcastNewsUpdates: true
-			}
-		},
+		}
 	]
 };
 
