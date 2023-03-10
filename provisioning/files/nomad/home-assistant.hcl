@@ -46,7 +46,7 @@ job "home-assistant" {
                 network_mode = "host"
 
                 volumes = [
-                    "local/configuration.yaml:/config/configuration.yaml",
+                    "local/config/configuration.yaml:/config/configuration.yaml",
                     "secrets/secrets.yaml:/config/secrets.yaml",
                     "secrets/service-account.json:/config/service-account.json",
                 ]
@@ -58,72 +58,14 @@ job "home-assistant" {
                 read_only = false
             }
 
-            template {
-                data = <<EOF
-homeassistant:
-  name: Home
-  elevation: !secret elevation
-  latitude: !secret latitude
-  longitude: !secret longitude
-  temperature_unit: F
-  time_zone: America/New_York
-  unit_system: imperial
-  currency: USD
-  language: en
-  country: US
-  internal_url: https://homeassistant.proxy.lan.qidux.com
-  external_url: https://homeassistant.qidux.com
+            artifact {
+                source = "git::https://github.com/cdriehuys/home-assistant"
+                destination = "local/config/"
 
-http:
-  use_x_forwarded_for: true
-  trusted_proxies:
-    # Internal network
-    - 192.168.1.0/24
-    # Localhost for cloudflare tunnel
-    - 127.0.0.1
-    - "::1"
-
-# Loads default set of integrations. Do not remove.
-default_config:
-
-# Load frontend themes from the themes folder
-frontend:
-  themes: !include_dir_merge_named themes
-
-# Text to speech
-tts:
-  - platform: google_translate
-
-automation: !include automations.yaml
-script: !include scripts.yaml
-scene: !include scenes.yaml
-
-google_assistant:
-  project_id: !secret google_project_id
-  service_account: !include service-account.json
-  report_state: true
-
-sensor:
-  - platform: rest
-    resource: http://bedmirror.lan.qidux.com:8080/display-state
-    name: Magic Mirror
-    unique_id: magic_mirror
-    json_attributes:
-      - on
-
-rest_command:
-  magic_mirror_on:
-    url: http://bedmirror.lan.qidux.com:8080/display-state
-    method: put
-    content_type: application/json
-    payload: '{"on": true}'
-  magic_mirror_off:
-    url: http://bedmirror.lan.qidux.com:8080/display-state
-    method: put
-    content_type: application/json
-    payload: '{"on": false}'
-EOF
-                destination = "local/configuration.yaml"
+                options {
+                    ref = "main"
+                    depth = 1
+                }
             }
 
             template {
