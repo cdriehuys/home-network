@@ -15,6 +15,14 @@ job "magic-mirror" {
             }
         }
 
+        update {
+            auto_promote = true
+            auto_revert = true
+            canary = 1
+            min_healthy_time = "15s"
+            healthy_deadline = "1m"
+        }
+
         volume "magic-mirror-config" {
             type = "host"
             read_only = false
@@ -116,11 +124,24 @@ let config = {
             module: "weather",
             position: "top_right",
             config: {
-                type: "hourly",
+                type: "current",
                 weatherProvider: "weathergov",
                 apiBase: "https://api.weather.gov/points/",
                 lat: "{{ with secret "secrets/home/location" }}{{ .Data.latitude }}{{ end }}",
-                lon: "{{ with secret "secrets/home/location" }}{{ .Data.longitude }}{{ end }}"
+                lon: "{{ with secret "secrets/home/location" }}{{ .Data.longitude }}{{ end }}",
+                roundTemp: true,
+            }
+        },
+        {
+            module: "weather",
+            position: "top_right",
+            config: {
+                type: "forecast",
+                weatherProvider: "weathergov",
+                apiBase: "https://api.weather.gov/points/",
+                lat: "{{ with secret "secrets/home/location" }}{{ .Data.latitude }}{{ end }}",
+                lon: "{{ with secret "secrets/home/location" }}{{ .Data.longitude }}{{ end }}",
+                roundTemp: true,
             }
         },
 		{
