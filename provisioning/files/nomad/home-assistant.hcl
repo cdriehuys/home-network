@@ -63,8 +63,7 @@ job "home-assistant" {
                 destination = "local/config/"
 
                 options {
-                    ref = "main"
-                    depth = 1
+                    ref = "83253d2"
                 }
             }
 
