@@ -69,21 +69,21 @@ job "home-assistant" {
 
             template {
                 data = <<EOF
-{{with secret "kv/data/home-assistant"}}
-elevation: {{.Data.data.elevation}}
-latitude: {{.Data.data.latitude}}
-longitude: {{.Data.data.longitude}}
+{{with secret "secrets/home/location"}}
+elevation: {{.Data.elevation}}
+latitude: {{.Data.latitude}}
+longitude: {{.Data.longitude}}
 {{end}}
 
-{{with secret "kv/data/google/home-assistant"}}
-google_project_id: "{{ .Data.data.project_id }}"{{ end}}
+{{with secret "secrets/google/home-assistant"}}
+google_project_id: "{{ .Data.project_id }}"{{ end}}
 EOF
                 destination = "secrets/secrets.yaml"
             }
 
             template {
                 data = <<EOF
-{{with secret "kv/data/google/home-assistant"}}{{ .Data.data.service_account }}{{end}}
+{{with secret "secrets/google/home-assistant"}}{{ .Data.service_account }}{{end}}
 EOF
                 destination = "secrets/service-account.json"
             }
@@ -101,7 +101,7 @@ EOF
 
             template {
                 data = <<EOF
-TUNNEL_TOKEN={{ with secret "kv/data/cloudflare/tunnels/home-assistant" }}{{ .Data.data.token }}{{ end }}
+TUNNEL_TOKEN={{ with secret "secrets/cloudflare/tunnels/home-assistant" }}{{ .Data.token }}{{ end }}
 EOF
                 destination = "secrets/tunnel.env"
                 env = true

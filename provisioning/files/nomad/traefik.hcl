@@ -3,7 +3,7 @@ job "traefik" {
     type = "service"
 
     constraint {
-        attribute = "${meta.cluster}
+        attribute = "${meta.cluster}"
         operator = "=="
         value = "compute"
     }
@@ -97,8 +97,8 @@ EOF
 
             template {
                 data = <<EOF
-{{ with secret "kv/data/cloudflare" }}
-CF_DNS_API_TOKEN={{ .Data.data.api_token }}
+{{ with secret "secrets/cloudflare" }}
+CF_DNS_API_TOKEN={{ .Data.dns_api_token }}
 {{ end }}
 EOF
 

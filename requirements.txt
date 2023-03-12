@@ -1,4 +1,5 @@
 ansible==7.1.0
+hvac==1.1.0
 jmespath==1.0.1
 proxmoxer==2.0.1
 python-nomad==1.5.0
