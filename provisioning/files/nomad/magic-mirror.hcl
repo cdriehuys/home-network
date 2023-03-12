@@ -49,8 +49,9 @@ job "magic-mirror" {
                 ]
 
                 check {
-                    type = "tcp"
+                    type = "http"
                     port = "http"
+                    path = "/"
                     interval = "10s"
                     timeout = "2s"
                 }
@@ -64,7 +65,7 @@ job "magic-mirror" {
                 args = ["run", "server"]
 
                 volumes = [
-                    "local/config.js:/opt/magic_mirror/config/config.js"
+                    "secrets/config.js:/opt/magic_mirror/config/config.js"
                 ]
             }
 
@@ -92,34 +93,34 @@ job "magic-mirror" {
  * and https://docs.magicmirror.builders/modules/configuration.html
  */
 let config = {
-	address: "0.0.0.0",
-	port: 8080,
-	basePath: "/",
-	ipWhitelist: ["192.168.1.0/24"],
+    address: "0.0.0.0",
+    port: 8080,
+    basePath: "/",
+    ipWhitelist: ["192.168.1.0/24"],
 
-	useHttps: false, 		// Support HTTPS or not, default "false" will use HTTP
-	httpsPrivateKey: "", 	// HTTPS private key path, only require when useHttps is true
-	httpsCertificate: "", 	// HTTPS Certificate path, only require when useHttps is true
+    useHttps: false, 		// Support HTTPS or not, default "false" will use HTTP
+    httpsPrivateKey: "", 	// HTTPS private key path, only require when useHttps is true
+    httpsCertificate: "", 	// HTTPS Certificate path, only require when useHttps is true
 
-	language: "en",
-	locale: "en-US",
-	logLevel: ["INFO", "LOG", "WARN", "ERROR"], // Add "DEBUG" for even more logging
-	timeFormat: 24,
-	units: "imperial",
-	serverOnly: true,
+    language: "en",
+    locale: "en-US",
+    logLevel: ["INFO", "LOG", "WARN", "ERROR"], // Add "DEBUG" for even more logging
+    timeFormat: 24,
+    units: "imperial",
+    serverOnly: true,
 
-	modules: [
-		{
-			module: "alert",
-		},
-		{
-			module: "updatenotification",
-			position: "top_bar"
-		},
-		{
-			module: "clock",
-			position: "top_left"
-		},
+    modules: [
+        {
+            module: "alert",
+        },
+        {
+            module: "updatenotification",
+            position: "top_bar"
+        },
+        {
+            module: "clock",
+            position: "top_left"
+        },
         {
             module: "weather",
             position: "top_right",
@@ -144,26 +145,24 @@ let config = {
                 roundTemp: true,
             }
         },
-		{
-			module: "calendar",
-			header: "US Holidays",
-			position: "top_left",
-			config: {
-				calendars: [
-					{
-						symbol: "calendar-check",
-						url: "webcal://www.calendarlabs.com/ical-calendar/ics/76/US_Holidays.ics"
-					}
-				]
-			}
-		}
-	]
+        {
+            module: "calendar",
+            position: "top_left",
+            config: {
+                calendars: [
+                    {{ with secret "secrets/google/calendar/personal" }}{
+                        url: "{{ .Data.ics_url }}"
+                    },{{ end }}
+                ]
+            }
+        }
+    ]
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
 if (typeof module !== "undefined") {module.exports = config;}
 EOF
-                destination = "local/config.js"
+                destination = "secrets/config.js"
             }
         }
     }
