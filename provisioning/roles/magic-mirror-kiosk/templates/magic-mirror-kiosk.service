@@ -1,0 +1,14 @@
+[Unit]
+Description=Kiosk mode browser to display Magic Mirror interface
+Wants=graphical.target network.target
+After=graphical.target network.target
+
+[Service]
+Environment=DISPLAY=:0.0
+ExecStart={{ magic_mirror_kiosk_script }} {{ magic_mirror_kiosk_url }}
+Restart=on-failure
+User={{ magic_mirror_kiosk_user }}
+Group={{ magic_mirror_kiosk_user }}
+
+[Install]
+WantedBy=graphical.target network.target

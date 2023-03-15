@@ -1,0 +1,9 @@
+- name: Upload service config
+  become: true
+  ansible.builtin.template:
+    dest: "{{ consul_config_dir }}/svc-{{ consul_service_name }}.hcl"
+    mode: "644"
+    owner: "consul"
+    src: svc-template.hcl
+  notify:
+    - Reload Consul

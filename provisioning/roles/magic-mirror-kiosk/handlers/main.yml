@@ -1,0 +1,5 @@
+- name: Restart Magic Mirror kiosk
+  become: true
+  ansible.builtin.service:
+    name: magic-mirror-kiosk
+    state: restarted

@@ -1,0 +1,21 @@
+- name: Provision magic mirror client
+  hosts: magic_mirror
+  remote_user: ansible
+
+  roles:
+    - ssh-harden
+    - role: key-sync
+      vars:
+        key_sync_url: "{{ authorized_keys_url }}"
+    - role: consul
+      consul_mode: agent
+    - role: magic-mirror-kiosk
+      vars:
+        magic_mirror_kiosk_url: https://magic-mirror.proxy.lan.qidux.com
+    - role: consul-service-register
+      vars:
+        consul_service_name: magic-mirror-controller
+        consul_service_port: 8080
+        consul_service_hostname: mm-controller.proxy.lan.qidux.com
+        consul_service_checks:
+          - path: "/display-state"

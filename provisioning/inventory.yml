@@ -13,6 +13,10 @@ all:
         consul2.lan.qidux.com:
         consul3.lan.qidux.com:
 
+    magic_mirror:
+      hosts:
+        bedmirror.lan.qidux.com:
+
     nomad:
       children:
         nomad_servers:

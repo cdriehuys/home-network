@@ -1,0 +1,12 @@
+magic_mirror_kiosk_user: mirror
+
+magic_mirror_kiosk_script: /usr/local/bin/magic-mirror-kiosk
+
+magic_mirror_kiosk_controller_version: v0.1.0
+magic_mirror_kiosk_controller_archive: magic-mirror-controller-{{ magic_mirror_kiosk_controller_version }}-linux-arm64.tar.gz
+magic_mirror_kiosk_controller_release_url: https://github.com/cdriehuys/magic-mirror-controller/releases/download/{{ magic_mirror_kiosk_controller_version }}
+magic_mirror_kiosk_controller_archive_url: "{{ magic_mirror_kiosk_controller_release_url }}/{{ magic_mirror_kiosk_controller_archive }}"
+magic_mirror_kiosk_controller_checksum: "md5:{{ magic_mirror_kiosk_controller_archive_url }}.md5"
+
+magic_mirror_kiosk_controller_dir: /opt/magic-mirror-controller
+magic_mirror_kiosk_controller_bin_dir: "{{ magic_mirror_kiosk_controller_dir }}/bin"

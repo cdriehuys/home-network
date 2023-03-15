@@ -1,0 +1,107 @@
+- name: Install dependencies
+  become: true
+  ansible.builtin.package:
+    name:
+      - firefox-esr
+      - xdotool
+
+- name: Create mirror user
+  become: true
+  ansible.builtin.user:
+    create_home: true
+    name: "{{ magic_mirror_kiosk_user }}"
+
+- name: Ensure no other user is automatically logged in
+  become: true
+  ansible.builtin.replace:
+    path: /etc/lightdm/lightdm.conf
+    regexp: "^autologin-user="
+    replace: "#autologin-user="
+
+- name: Create LightDM config directory
+  become: true
+  ansible.builtin.file:
+    mode: "755"
+    path: /etc/lightdm/lightdm.conf.d
+    state: directory
+
+- name: Upload autologin config
+  become: true
+  ansible.builtin.template:
+    dest: /etc/lightdm/lightdm.conf.d/10-mirror-login.conf
+    mode: "644"
+    src: 10-mirror-login.conf
+  register: autologin_config
+
+- name: Restart to respect autologin config
+  become: true
+  ansible.builtin.reboot:
+  when: autologin_config.changed
+
+- name: Upload kiosk script
+  become: true
+  ansible.builtin.copy:
+    dest: "{{ magic_mirror_kiosk_script }}"
+    mode: "755"
+    src: magic-mirror-kiosk
+  notify:
+    - Restart Magic Mirror kiosk
+
+- name: Download controller archive
+  become: true
+  ansible.builtin.get_url:
+    checksum: "{{ magic_mirror_kiosk_controller_checksum }}"
+    dest: /opt/{{ magic_mirror_kiosk_controller_archive }}
+    url: "{{ magic_mirror_kiosk_controller_archive_url }}"
+
+- name: Create controller bin directory
+  become: true
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ magic_mirror_kiosk_controller_bin_dir }}"
+    state: directory
+
+- name: Unpack controller archive
+  become: true
+  ansible.builtin.unarchive:
+    dest: "{{ magic_mirror_kiosk_controller_bin_dir }}"
+    include:
+      - magic-mirror-controller
+    remote_src: true
+    src: "/opt/{{ magic_mirror_kiosk_controller_archive }}"
+
+- name: Upload controller service
+  become: true
+  ansible.builtin.template:
+    dest: "/etc/systemd/system/magic-mirror-controller.service"
+    mode: "644"
+    src: magic-mirror-controller.service
+  register: mirror_controller_service
+
+- name: Upload kiosk service
+  become: true
+  ansible.builtin.template:
+    dest: "/etc/systemd/system/magic-mirror-kiosk.service"
+    mode: "644"
+    src: magic-mirror-kiosk.service
+  register: mirror_kiosk_service
+
+- name: Reload systemd to observe service file changes
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: mirror_controller_service.changed or mirror_kiosk_service.changed
+
+- name: Enable kiosk service
+  become: true
+  ansible.builtin.service:
+    enabled: true
+    name: magic-mirror-kiosk
+    state: started
+
+- name: Enable controller service
+  become: true
+  ansible.builtin.service:
+    enabled: true
+    name: magic-mirror-controller
+    state: started

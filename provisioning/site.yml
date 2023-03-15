@@ -9,3 +9,6 @@
 
 - name: Nomad
   ansible.builtin.import_playbook: nomad.yml
+
+- name: Magic Mirror
+  ansible.builtin.import_playbook: magic-mirror.yml
