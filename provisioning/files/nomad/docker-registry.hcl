@@ -9,6 +9,12 @@ job "docker-registry" {
     }
 
     group "docker-registry" {
+        restart {
+            delay = "15s"
+            interval = "5m"
+            mode = "delay"
+        }
+
         network {
             port "http" {
                 to = 5000

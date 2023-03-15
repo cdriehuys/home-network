@@ -14,6 +14,12 @@ job "zwave-js" {
     }
 
     group "zwave-js" {
+        restart {
+            delay = "15s"
+            interval = "5m"
+            mode = "delay"
+        }
+
         network {
             port "http" {
                 to = 8091

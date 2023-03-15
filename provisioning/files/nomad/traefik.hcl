@@ -9,7 +9,11 @@ job "traefik" {
     }
 
     group "traefik" {
-        count = 1
+        restart {
+            delay = "15s"
+            interval = "5m"
+            mode = "delay"
+        }
 
         network {
             port "http" {

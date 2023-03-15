@@ -9,6 +9,12 @@ job "home-assistant" {
     }
 
     group "home-assistant" {
+        restart {
+            delay = "15s"
+            interval = "5m"
+            mode = "delay"
+        }
+
         network {
             port "http" { static = 8123 }
         }

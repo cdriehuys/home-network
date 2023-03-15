@@ -9,6 +9,13 @@ job "tailscale" {
     }
 
     group "tailscale" {
+        restart {
+            attempts = 2
+            delay = "15s"
+            interval = "30m"
+            mode = "delay"
+        }
+
         task "tailscale" {
             # Need raw_exec because the isolation used by the normal exec driver
             # doesn't work on the Raspberry Pi machines we use.
