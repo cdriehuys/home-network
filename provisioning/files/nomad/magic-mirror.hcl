@@ -9,6 +9,12 @@ job "magic-mirror" {
     }
 
     group "magic-mirror" {
+        restart {
+            delay = "15s"
+            interval = "5m"
+            mode = "delay"
+        }
+
         network {
             port "http" {
                 to = 8080
@@ -55,6 +61,13 @@ job "magic-mirror" {
                     interval = "10s"
                     timeout = "2s"
                 }
+            }
+
+            env {
+                // Set to same timezone as mirror client so that calendar dates
+                // are correct. The mirror client can't just use UTC as well
+                // because then the clock it displays is also in UTC.
+                TZ = "America/New_York"
             }
 
             config {
@@ -147,7 +160,7 @@ let config = {
         },
         {
             module: "calendar",
-            position: "top_left",
+            position: "bottom_left",
             config: {
                 calendars: [
                     {{ with secret "secrets/google/calendar/personal" }}{
@@ -155,7 +168,20 @@ let config = {
                     },{{ end }}
                 ]
             }
-        }
+        },
+        {
+            module: "MMM-Todoist",
+            position: "bottom_left",
+            header: "Todo",
+            config: {
+                accessToken: "{{ with secret "secrets/todoist" }}{{ .Data.access_token }}{{ end }}",
+                maximumEntries: 10,
+                projects: [{{ with secret "secrets/todoist" }}{{ .Data.project_id }}{{ end }}],
+                labels: ["Mirror"],
+                showProject: false,
+                displayTasksWithinDays: 7,
+            },
+        },
     ]
 };
 

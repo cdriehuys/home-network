@@ -329,6 +329,11 @@ def main():
             # need clients to poll for changes to the token.
             ttl="30m",
         ),
+        VaultSecret(
+            KV_MOUNT_POINT,
+            "todoist",
+            [SecretAttr("access_token"), SecretAttr("project_id")],
+        ),
     ]
 
     for secret in secrets:
