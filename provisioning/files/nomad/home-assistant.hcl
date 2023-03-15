@@ -69,7 +69,7 @@ job "home-assistant" {
                 destination = "local/config/"
 
                 options {
-                    ref = "83253d2"
+                    ref = "2b1f4a7"
                 }
             }
 
