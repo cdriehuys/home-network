@@ -48,7 +48,7 @@ job "home-assistant" {
             }
 
             config {
-                image = "homeassistant/home-assistant:2023.3.1"
+                image = "homeassistant/home-assistant:2023.4.4"
                 network_mode = "host"
 
                 volumes = [
