@@ -77,9 +77,6 @@
       - name: magic-mirror-css
         path: /nfs/nomad/magic-mirror/css
         read_only: false
-      - name: magic-mirror-modules
-        path: /nfs/nomad/magic-mirror/modules
-        read_only: false
       - name: traefik-certs-production
         path: /nfs/nomad/traefik-certs/production
         read_only: false
