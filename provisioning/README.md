@@ -46,6 +46,15 @@ set up its own provisioning user.
 * SSH access enabled through the Raspberry Pi Imager software with the default
   username and password of `pi` and `raspberry`
 
+This can be accomplished using either the advanced settings of `rpi-imager`, or
+by writing some files to the `bootfs` of a formatted SD card.
+
+```shell
+cd path/to/mounted/bootfs
+touch ssh
+echo "pi:$(echo 'raspberry' | openssl passwd -6 -stdin)" > userconf
+```
+
 ## Troubleshooting
 
 ### SSH Authentication Failed
