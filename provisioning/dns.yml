@@ -13,28 +13,6 @@
       original_user: pi
       original_password: raspberry
 
-- name: Provision servers
-  hosts: dns
-
-  remote_user: ansible
-
-  roles:
-    - update-hostname
-    - ssh-harden
-    - role: key-sync
-      vars:
-        key_sync_url: "{{ authorized_keys_url }}"
-    - ip-forwarding
-    - role: artis3n.tailscale
-      vars:
-        tailscale_args: >
-          --accept-dns=false
-          --advertise-exit-node
-          --advertise-routes=192.168.1.0/24
-    - role: consul
-      consul_mode: agent
-    - consul-template
-
 - name: Provision DNS
   hosts: dns
   # Only upgrade one-at-a-time so that we always have at least one nameserver
@@ -44,12 +22,38 @@
   remote_user: ansible
 
   roles:
+    - update-hostname
+    - ip-forwarding
     - role: unbound
       unbound_access_controls:
         - "192.168.1.0/24 allow"
+        # Travel router
+        - "192.168.8.0/24 allow"
         # Tailscale
         - "100.64.0.0/10 allow"
       unbound_local_domain: "{{ local_domain }}"
+
+# All other tasks for DNS servers that won't result in downtime.
+- name: Provision servers
+  hosts: dns
+
+  remote_user: ansible
+
+  roles:
+    - ssh-harden
+    - role: key-sync
+      vars:
+        key_sync_url: "{{ authorized_keys_url }}"
+    - role: artis3n.tailscale
+      vars:
+        tailscale_args: >
+          --accept-dns=false
+          --advertise-exit-node
+          --advertise-routes=192.168.1.0/24
+        verbose: true
+    - role: consul
+      consul_mode: agent
+    - consul-template
     - role: unbound-consul
       unbound_consul_services:
         - name: traefik
