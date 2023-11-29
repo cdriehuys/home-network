@@ -16,7 +16,7 @@ After=network-online.target
 [Service]
 User=vault
 Group=vault
-PIDFile=/var/run/vault/vault.pid
+PIDFile=/run/vault/vault.pid
 ExecStart={{ vault_binary_dir }}/vault server -config={{ vault_config_dir }}
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process

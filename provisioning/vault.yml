@@ -40,6 +40,7 @@
   remote_user: ansible
 
   roles:
+    - software-update
     - role: ssh-harden
     - role: key-sync
       vars:

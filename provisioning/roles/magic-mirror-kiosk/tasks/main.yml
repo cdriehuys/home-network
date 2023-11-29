@@ -5,39 +5,6 @@
       - firefox-esr
       - xdotool
 
-- name: Create mirror user
-  become: true
-  ansible.builtin.user:
-    create_home: true
-    name: "{{ magic_mirror_kiosk_user }}"
-
-- name: Ensure no other user is automatically logged in
-  become: true
-  ansible.builtin.replace:
-    path: /etc/lightdm/lightdm.conf
-    regexp: "^autologin-user="
-    replace: "#autologin-user="
-
-- name: Create LightDM config directory
-  become: true
-  ansible.builtin.file:
-    mode: "755"
-    path: /etc/lightdm/lightdm.conf.d
-    state: directory
-
-- name: Upload autologin config
-  become: true
-  ansible.builtin.template:
-    dest: /etc/lightdm/lightdm.conf.d/10-mirror-login.conf
-    mode: "644"
-    src: 10-mirror-login.conf
-  register: autologin_config
-
-- name: Restart to respect autologin config
-  become: true
-  ansible.builtin.reboot:
-  when: autologin_config.changed
-
 - name: Upload kiosk script
   become: true
   ansible.builtin.copy:

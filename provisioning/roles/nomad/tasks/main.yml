@@ -65,6 +65,8 @@
     owner: "{{ nomad_operator }}"
     remote_src: true
     src: /opt/{{ nomad_archive }}
+  notify:
+    - Restart Nomad
 
 - name: Upload agent config file
   become: true
