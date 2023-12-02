@@ -5,8 +5,10 @@ After=graphical.target network.target
 
 [Service]
 Environment=DISPLAY=:0.0
+Environment=XAUTHORITY=/home/{{ magic_mirror_kiosk_user }}/.Xauthority
 ExecStart={{ magic_mirror_kiosk_script }} {{ magic_mirror_kiosk_url }}
 Restart=on-failure
+RestartSec=10
 User={{ magic_mirror_kiosk_user }}
 Group={{ magic_mirror_kiosk_user }}
 

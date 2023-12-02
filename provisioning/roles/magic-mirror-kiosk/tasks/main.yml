@@ -5,6 +5,68 @@
       - firefox-esr
       - xdotool
 
+- name: Create mirror user
+  become: true
+  ansible.builtin.user:
+    create_home: true
+    name: "{{ magic_mirror_kiosk_user }}"
+
+- name: Ensure no other user is automatically logged in
+  become: true
+  ansible.builtin.replace:
+    path: /etc/lightdm/lightdm.conf
+    regexp: "^autologin-user="
+    replace: "#autologin-user="
+  notify:
+    - Restart mirror
+
+- name: Create LightDM config directory
+  become: true
+  ansible.builtin.file:
+    mode: "755"
+    path: /etc/lightdm/lightdm.conf.d
+    state: directory
+
+- name: Upload autologin config
+  become: true
+  ansible.builtin.template:
+    dest: /etc/lightdm/lightdm.conf.d/10-mirror-login.conf
+    mode: "644"
+    src: 10-mirror-login.conf
+  notify:
+    - Restart mirror
+
+- name: Create LXDE config files for {{ magic_mirror_kiosk_user }}
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/xdg/lxsession/LXDE-{{ magic_mirror_kiosk_user }}
+    remote_src: true
+    src: /etc/xdg/lxsession/LXDE/
+
+- name: Disable desktop in "{{ item }}"
+  become: true
+  ansible.builtin.lineinfile:
+    path: "{{ item }}/autostart"
+    regexp: "^@lxpanel"
+    line: "#@lxpanel"
+  loop:
+    - /etc/xdg/lxsession/LXDE
+    - /etc/xdg/lxsession/LXDE-{{ magic_mirror_kiosk_user}}
+  notify:
+    - Restart mirror
+
+- name: Disable screensaver in "{{ item }}"
+  become: true
+  ansible.builtin.lineinfile:
+    path: "{{ item }}/autostart"
+    regexp: "^@xscreensaver"
+    line: "#@xscreensaver"
+  loop:
+    - /etc/xdg/lxsession/LXDE
+    - /etc/xdg/lxsession/LXDE-{{ magic_mirror_kiosk_user}}
+  notify:
+    - Restart mirror
+
 - name: Upload kiosk script
   become: true
   ansible.builtin.copy:
@@ -36,6 +98,8 @@
       - magic-mirror-controller
     remote_src: true
     src: "/opt/{{ magic_mirror_kiosk_controller_archive }}"
+  notify:
+    - Restart Magic Mirror controller
 
 - name: Upload controller service
   become: true
@@ -43,6 +107,8 @@
     dest: "/etc/systemd/system/magic-mirror-controller.service"
     mode: "644"
     src: magic-mirror-controller.service
+  notify:
+    - Restart Magic Mirror controller
   register: mirror_controller_service
 
 - name: Upload kiosk service
@@ -51,6 +117,8 @@
     dest: "/etc/systemd/system/magic-mirror-kiosk.service"
     mode: "644"
     src: magic-mirror-kiosk.service
+  notify:
+    - Restart Magic Mirror kiosk
   register: mirror_kiosk_service
 
 - name: Reload systemd to observe service file changes
