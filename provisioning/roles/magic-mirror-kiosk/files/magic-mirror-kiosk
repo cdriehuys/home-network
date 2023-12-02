@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -euf
+
+mirror_url="$1"
+echo "Launching mirror kiosk to display ${mirror_url}"
+
+# Disable screensavers and power saving measures so the display doesn't turn off
+# for inactivity.
+xset s noblank
+xset s off
+xset -dpms
+
+exec /usr/bin/firefox-esr \
+    --kiosk \
+    --private-window \
+    "${mirror_url}"

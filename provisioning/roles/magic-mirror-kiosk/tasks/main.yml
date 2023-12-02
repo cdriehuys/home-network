@@ -5,6 +5,15 @@
       - firefox-esr
       - xdotool
 
+- name: Upload kiosk script
+  become: true
+  ansible.builtin.copy:
+    dest: "{{ magic_mirror_kiosk_script }}"
+    mode: "755"
+    src: magic-mirror-kiosk
+  notify:
+    - Restart Magic Mirror kiosk
+
 - name: Download controller archive
   become: true
   ansible.builtin.get_url:
@@ -28,43 +37,38 @@
     remote_src: true
     src: "/opt/{{ magic_mirror_kiosk_controller_archive }}"
 
-- name: Create user service directory
-  become: true
-  ansible.builtin.file:
-    path: "/home/pi/.config/systemd/user"
-    state: directory
-    owner: pi
-    mode: "755"
-
 - name: Upload controller service
   become: true
   ansible.builtin.template:
-    dest: "/home/pi/.config/systemd/user/magic-mirror-controller.service"
+    dest: "/etc/systemd/system/magic-mirror-controller.service"
     mode: "644"
-    owner: pi
     src: magic-mirror-controller.service
-  notify:
-    - Restart mirror
+  register: mirror_controller_service
 
 - name: Upload kiosk service
   become: true
   ansible.builtin.template:
-    dest: "/home/pi/.config/systemd/user/magic-mirror-kiosk.service"
+    dest: "/etc/systemd/system/magic-mirror-kiosk.service"
     mode: "644"
-    owner: pi
     src: magic-mirror-kiosk.service
-  notify:
-    - Restart mirror
+  register: mirror_kiosk_service
 
-- name: Start kiosk at login
+- name: Reload systemd to observe service file changes
   become: true
-  ansible.builtin.blockinfile:
-    path: /home/pi/.config/wayfire.ini
-    block: |
-      [autostart]
-      kiosk = systemctl start --user magic-mirror-kiosk.service
-      kisok-controller = systemctl start --user magic-mirror-controller.service
-      screensaver = false
-      dpms = false
-  notify:
-    - Restart mirror
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: mirror_controller_service.changed or mirror_kiosk_service.changed
+
+- name: Enable kiosk service
+  become: true
+  ansible.builtin.service:
+    enabled: true
+    name: magic-mirror-kiosk
+    state: started
+
+- name: Enable controller service
+  become: true
+  ansible.builtin.service:
+    enabled: true
+    name: magic-mirror-controller
+    state: started

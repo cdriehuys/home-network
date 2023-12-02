@@ -1,9 +1,13 @@
 [Unit]
 Description=Magic Mirror Controller
+Wants=graphical.target network.target magic-mirror-kiosk.service
+After=graphical.target network.target magic-mirror-kiosk.service
 
 [Service]
 ExecStart={{ magic_mirror_kiosk_controller_bin_dir }}/magic-mirror-controller
 Restart=on-failure
+User={{ magic_mirror_kiosk_user }}
+Group={{ magic_mirror_kiosk_user }}
 
 [Install]
-WantedBy=default.target
+WantedBy=graphical.target network.target magic-mirror-kiosk.service
