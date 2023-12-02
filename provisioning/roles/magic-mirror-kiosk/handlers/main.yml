@@ -3,3 +3,7 @@
   ansible.builtin.service:
     name: magic-mirror-kiosk
     state: restarted
+
+- name: Restart mirror
+  become: true
+  ansible.builtin.reboot:

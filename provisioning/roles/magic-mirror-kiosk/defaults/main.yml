@@ -1,7 +1,3 @@
-magic_mirror_kiosk_user: mirror
-
-magic_mirror_kiosk_script: /usr/local/bin/magic-mirror-kiosk
-
 magic_mirror_kiosk_controller_version: v0.1.0
 magic_mirror_kiosk_controller_archive: magic-mirror-controller-{{ magic_mirror_kiosk_controller_version }}-linux-arm64.tar.gz
 magic_mirror_kiosk_controller_release_url: https://github.com/cdriehuys/magic-mirror-controller/releases/download/{{ magic_mirror_kiosk_controller_version }}

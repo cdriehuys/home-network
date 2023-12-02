@@ -168,20 +168,7 @@ let config = {
                     },{{ end }}
                 ]
             }
-        },
-        {
-            module: "MMM-Todoist",
-            position: "bottom_left",
-            header: "Todo",
-            config: {
-                accessToken: "{{ with secret "secrets/todoist" }}{{ .Data.access_token }}{{ end }}",
-                maximumEntries: 10,
-                projects: [{{ with secret "secrets/todoist" }}{{ .Data.project_id }}{{ end }}],
-                labels: ["Mirror"],
-                showProject: false,
-                displayTasksWithinDays: 7,
-            },
-        },
+        }
     ]
 };
 
