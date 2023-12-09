@@ -75,7 +75,7 @@ job "zwave-js" {
             }
 
             config {
-                image = "zwavejs/zwave-js-ui:8.13.1"
+                image = "zwavejs/zwave-js-ui:9.5.1"
 
                 devices = [
                     {

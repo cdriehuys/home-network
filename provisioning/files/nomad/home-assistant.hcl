@@ -48,7 +48,7 @@ job "home-assistant" {
             }
 
             config {
-                image = "homeassistant/home-assistant:2023.4.4"
+                image = "ghcr.io/home-assistant/home-assistant:2023.12.1"
                 network_mode = "host"
 
                 volumes = [
