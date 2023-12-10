@@ -58,6 +58,11 @@ job "home-assistant" {
                 ]
             }
 
+            resources {
+                cpu = 500
+                memory = 1024
+            }
+
             volume_mount {
                 volume = "home-assistant"
                 destination = "/config"
