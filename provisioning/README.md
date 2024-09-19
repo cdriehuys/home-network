@@ -63,3 +63,27 @@ The VS Code dev container connects to the SSH agent on the host to forward your
 keys. On Windows, this will be the WSL backend that Docker is run through rather
 than the SSH agent on the base Windows install. If you're seeing "Permission
 denied: public key", make sure that the SSH agent is running in WSL.
+
+## Nomad Unable to Refresh Vault Token
+
+If Nomad is unable to communicate with Vault for a long enough period, its token
+will expire and can no longer be refreshed. To generate a new token, first
+authenticate with Vault:
+```shell
+vault login
+```
+
+Next, generate a new token for Nomad:
+```shell
+vault token create -policy nomad-server -period 72h -orphan
+```
+
+Then update the Nomad token in Ansible's vault:
+```shell
+ansible-vault edit group_vars/all/vault.yml
+```
+
+Finally, roll out the new token to the Nomad servers:
+```shell
+ansible-playbook -i inventory.yml nomad.yml
+```
