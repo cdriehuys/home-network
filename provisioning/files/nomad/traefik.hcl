@@ -70,11 +70,6 @@ job "traefik" {
 entryPoints:
     web:
         address: ":80"
-        http:
-            redirections:
-                entrypoint:
-                    to: websecure
-                    scheme: https
     websecure:
         address: ":443"
     traefik:
