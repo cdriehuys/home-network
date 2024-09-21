@@ -78,6 +78,18 @@
       - name: magic-mirror-css
         path: /nfs/nomad/magic-mirror/css
         read_only: false
+      - name: nzbget
+        path: /opt/nzbget
+        read_only: false
+      - name: prowlarr
+        path: /opt/prowlarr
+        read_only: false
+      - name: radarr
+        path: /opt/radarr
+        read_only: false
+      - name: sonarr
+        path: /opt/sonarr
+        read_only: false
       - name: traefik-certs-production
         path: /nfs/nomad/traefik-certs/production
         read_only: false
