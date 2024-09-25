@@ -8,69 +8,13 @@ job "media" {
         value = "compute"
     }
 
-    group "nzbget" {
-        restart {
-            delay = "15s"
-            interval = "5m"
-            mode = "delay"
-        }
-
-        network {
-            port "http" {
-                to = 6789
-            }
-        }
-
-        volume "nzbget" {
-            type = "host"
-            read_only = false
-            source = "nzbget"
-        }
-
-        task "nzbget" {
-            driver = "docker"
-
-            service {
-                name = "nzbget"
-                port = "http"
-
-                tags = [
-                    "traefik.enable=true",
-                    "traefik.http.routers.nzbget.rule=Host(`nzbget.proxy.lan.qidux.com`)",
-                    "traefik.http.routers.nzbget.tls.certresolver=lan",
-                ]
-
-                check {
-                    type = "tcp"
-                    port = "http"
-                    interval = "10s"
-                    timeout = "2s"
-                }
-            }
-
-            config {
-                image = "ghcr.io/linuxserver/nzbget:24.3.20240913"
-                ports = ["http"]
-
-                volumes = [
-                    "/nfs/media:/data"
-                ]
-            }
-
-            env {
-                PUID = "0"
-                PGID = "0"
-            }
-
-            volume_mount {
-                volume = "nzbget"
-                destination = "/config"
-                read_only = false
-            }
-        }
-    }
-
     group "prowlarr" {
+        constraint {
+            attribute = "${node.unique.name}"
+            operator = "=="
+            value = "nomadcompute1"
+        }
+
         restart {
             delay = "15s"
             interval = "5m"
@@ -128,6 +72,12 @@ job "media" {
     }
 
     group "radarr" {
+        constraint {
+            attribute = "${node.unique.name}"
+            operator = "=="
+            value = "nomadcompute1"
+        }
+
         restart {
             delay = "15s"
             interval = "5m"
@@ -176,11 +126,6 @@ job "media" {
                 ]
             }
 
-            env {
-                PUID = "0"
-                PGID = "0"
-            }
-
 
             volume_mount {
                 volume = "radarr"
@@ -190,8 +135,88 @@ job "media" {
         }
     }
 
+    group "sabnzbd" {
+        constraint {
+            attribute = "${node.unique.name}"
+            operator = "=="
+            value = "nomadcompute2"
+        }
+
+        restart {
+            delay = "15s"
+            interval = "5m"
+            mode = "delay"
+        }
+
+        network {
+            port "http" {
+                to = 8080
+            }
+        }
+
+        volume "sabnzbd" {
+            type = "host"
+            read_only = false
+            source = "sabnzbd"
+        }
+
+        task "sabnzbd" {
+            driver = "docker"
+
+            service {
+                name = "sabnzbd"
+                port = "http"
+
+                tags = [
+                    "traefik.enable=true",
+                    "traefik.http.routers.sabnzbd.rule=Host(`sabnzbd.proxy.lan.qidux.com`)",
+                    "traefik.http.routers.sabnzbd.tls.certresolver=lan",
+                ]
+
+                check {
+                    type = "tcp"
+                    port = "http"
+                    interval = "10s"
+                    timeout = "2s"
+                }
+            }
+
+            config {
+                image = "ghcr.io/linuxserver/sabnzbd:4.3.3"
+                ports = ["http"]
+
+                volumes = [
+                    "/nfs/media:/data"
+                ]
+            }
+
+            env {
+                PUID = "0"
+                PGID = "0"
+            }
+
+            // The service was consistently restarting without additional
+            // resources.
+            resources {
+                cpu = 1000
+                memory = 1024
+            }
+
+            volume_mount {
+                volume = "sabnzbd"
+                destination = "/config"
+                read_only = false
+            }
+        }
+    }
 
     group "sonarr" {
+        constraint {
+            attribute = "${node.unique.name}"
+            operator = "=="
+            value = "nomadcompute1"
+        }
+
         restart {
             delay = "15s"
             interval = "5m"
