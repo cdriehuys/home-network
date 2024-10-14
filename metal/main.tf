@@ -106,7 +106,7 @@ output "provisioning_key_public" {
 }
 
 output "vms" {
-  value = jsonencode({
+  value = {
     "k8s_master": [for ip in resource.proxmox_virtual_environment_vm.k8s_master.ipv4_addresses : ip if startswith(ip[0], "192.168.")][0][0]
-  })
+  }
 }

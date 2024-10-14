@@ -1,0 +1,7 @@
+---
+- name: Ping
+  hosts: k8s
+  remote_user: provisioning
+
+  tasks:
+    - ansible.builtin.ping: {}
