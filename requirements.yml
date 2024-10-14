@@ -1,6 +1,11 @@
 collections:
   - name: ansible.posix
   - name: community.general
+  - name: k3s.orchestration
+    source: https://github.com/k3s-io/k3s-ansible.git
+    # Commit from 2024-10-08
+    version: 99fa632acb713758c8ee376e2a6cc9d03404914c
+    type: git
 
 roles:
   - src: artis3n.tailscale

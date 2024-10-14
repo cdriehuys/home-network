@@ -36,62 +36,28 @@ resource "tls_private_key" "provisioning_key" {
   algorithm = "ED25519"
 }
 
-data "proxmox_virtual_environment_vms" "debian_templates" {
-  tags = ["debian_12", "template"]
+module "k8s_server" {
+  source = "./modules/debian-vm"
 
-  filter {
-    name   = "template"
-    values = [true]
-  }
+  name = "k8s-server"
+  tags = ["k8s"]
 
-  filter {
-    name   = "status"
-    values = ["stopped"]
-  }
+  cpu_cores = 2
+  memory = 2048
+  authorized_keys = [resource.tls_private_key.provisioning_key.public_key_openssh]
 }
 
-locals {
-  debian_template_vms_by_name = {
-    for vm in data.proxmox_virtual_environment_vms.debian_templates.vms : vm.name => vm.vm_id
-  }
-  debian_template_names  = sort(keys(local.debian_template_vms_by_name))
-  debian_template_latest = local.debian_template_vms_by_name[local.debian_template_names[length(local.debian_template_names) - 1]]
-}
+module "k8s_agents" {
+  source = "./modules/debian-vm"
 
-resource "proxmox_virtual_environment_vm" "k8s_master" {
-  name        = "k8s-master"
-  description = "Managed by Terraform"
-  tags        = ["debian", "k8s", "terraform"]
+  count = 3
 
-  node_name = "pve"
+  name = "k8s-agent-${count.index + 1}"
+  tags = ["k8s"]
 
-  clone {
-    vm_id = local.debian_template_latest
-  }
-
-  cpu {
-    cores = 1
-    type  = "x86-64-v2-AES"
-  }
-
-  memory {
-    dedicated = 2048
-    // Floating set to same value to enable ballooning
-    floating = 2048
-  }
-
-  initialization {
-    user_account {
-      keys = [
-        trimspace(resource.tls_private_key.provisioning_key.public_key_openssh)
-      ]
-      username = "provisioning"
-    }
-  }
-
-  network_device {
-    bridge = "vmbr0"
-  }
+  cpu_cores = 1
+  memory = 1024
+  authorized_keys = [resource.tls_private_key.provisioning_key.public_key_openssh]
 }
 
 output "provisioning_key_private" {
@@ -107,6 +73,7 @@ output "provisioning_key_public" {
 
 output "vms" {
   value = {
-    "k8s_master": [for ip in resource.proxmox_virtual_environment_vm.k8s_master.ipv4_addresses : ip if startswith(ip[0], "192.168.")][0][0]
+    "k8s_server": module.k8s_server.ipv4_address,
+    "k8s_agents": [for vm in module.k8s_agents : vm.ipv4_address]
   }
 }

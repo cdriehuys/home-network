@@ -7,8 +7,11 @@ create-vm-template:
     packer init ./metal/packer
     packer build ./metal/packer
 
+# All bare metal configuration steps
+metal: metal-provision metal-configure
+
 # Provision Proxmox VMs
-metal:
+metal-provision:
     #!/usr/bin/env bash
     pushd ./metal
     terraform init
@@ -48,7 +51,7 @@ ssh vm:
     chmod 600 "${key_file}"
 
     vms="$(terraform output -json vms)"
-    ip="$(echo "${vms}" | jq -r 'fromjson | .["{{ vm }}"]')"
+    ip="$(echo "${vms}" | jq -r '.["{{ vm }}"]')"
 
     if [[ "${ip}" = "null" ]]; then
         echo "No VM named {{ vm }} in ${vms}"

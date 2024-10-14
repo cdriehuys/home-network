@@ -9,24 +9,31 @@ import sys
 logger = logging.getLogger(__name__)
 
 
-def read_vm_info() -> dict[str, str]:
+def read_vm_info() -> dict[str]:
     output = subprocess.check_output(["terraform", "output", "-json", "vms"])
     logger.debug("Received VM info: %s", output)
 
-    return json.loads(json.loads(output))
+    return json.loads(output)
 
 
-def vms_as_inventory(vms: dict[str, str]) -> dict[str, dict]:
+def vms_as_inventory(vms: dict[str]) -> dict[str, dict]:
     return {
         "_meta": {
             "hostvars": {},
         },
         "all": {
-            "children": ["k8s"],
+            "children": ["k3s"],
         },
-        "k8s": {
+        "k3s": {
+            "children": ["k3s_server", "k3s_agents"],
+        },
+        "k3s_server": {
             "children": [],
-            "hosts": [vms["k8s_master"]],
+            "hosts": [vms["k8s_server"]]
+        },
+        "k3s_agents": {
+            "children": [],
+            "hosts": vms.get("k8s_agents", [])
         }
     }
 

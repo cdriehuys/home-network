@@ -1,0 +1,8 @@
+k3s_version: "v1.31.1+k3s1"
+extra_server_args: ""
+extra_agent_args: ""
+
+token: "change-me-later"
+api_endpoint: "{{ groups['k3s_server'][0] }}"
+
+server_group: k3s_server
