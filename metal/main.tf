@@ -58,10 +58,10 @@ locals {
   debian_template_latest = local.debian_template_vms_by_name[local.debian_template_names[length(local.debian_template_names) - 1]]
 }
 
-resource "proxmox_virtual_environment_vm" "test" {
-  name        = "terraform-test"
+resource "proxmox_virtual_environment_vm" "k8s_master" {
+  name        = "k8s-master"
   description = "Managed by Terraform"
-  tags        = ["terraform", "debian"]
+  tags        = ["debian", "k8s", "terraform"]
 
   node_name = "pve"
 
@@ -75,9 +75,9 @@ resource "proxmox_virtual_environment_vm" "test" {
   }
 
   memory {
-    dedicated = 512
+    dedicated = 2048
     // Floating set to same value to enable ballooning
-    floating = 512
+    floating = 2048
   }
 
   initialization {
@@ -103,4 +103,10 @@ output "provisioning_key_private" {
 output "provisioning_key_public" {
   description = "SSH public key for provisioning VMs"
   value = resource.tls_private_key.provisioning_key.public_key_openssh
+}
+
+output "vms" {
+  value = jsonencode({
+    "k8s_master": [for ip in resource.proxmox_virtual_environment_vm.k8s_master.ipv4_addresses : ip if startswith(ip[0], "192.168.")][0][0]
+  })
 }

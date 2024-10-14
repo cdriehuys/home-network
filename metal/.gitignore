@@ -1,4 +1,0 @@
-# Terraform
-.terraform
-local.auto.tfvars
-tfplan

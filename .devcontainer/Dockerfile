@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/python:0-3.11
+FROM mcr.microsoft.com/devcontainers/python:3.11-bookworm
 
 ENV ANSIBLE_HOST_KEY_CHECKING=False \
     ANSIBLE_VAULT_PASSWORD_FILE=/workspaces/home-network/provisioning/.vault_password \
@@ -34,3 +34,6 @@ RUN consul -autocomplete-install \
     && nomad -autocomplete-install \
     && packer -autocomplete-install \
     && vault -autocomplete-install
+
+# Install `just` locally. This will be available from apt in Debian 13.
+RUN pipx install rust-just

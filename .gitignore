@@ -1,2 +1,11 @@
+# Packer artifacts and secrets
+downloaded_iso_path
+local.auto.pkrvars.hcl
+
+# Terraform
+.terraform
+local.auto.tfvars
+tfplan
+
 # Secrets for provisioning
 .vault_password

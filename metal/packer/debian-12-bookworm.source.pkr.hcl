@@ -5,7 +5,7 @@ source "proxmox-iso" "debian-12" {
   insecure_skip_tls_verify = false
   node                     = var.proxmox_node
 
-  vm_name                 = "${trimsuffix(basename(var.iso_url), ".iso")}-${formatdate("YYYY-MM-DDThh:mm:ss", timestamp())}"
+  vm_name                 = "${trimsuffix(basename(var.iso_url), ".iso")}-${formatdate("YYYY-MM-DD'T'hh-mm-ss", timestamp())}"
   template_description    = <<EOF
   # Debian 12 Bookworm Template
 
@@ -47,7 +47,7 @@ source "proxmox-iso" "debian-12" {
     unmount          = true
   }
 
-  http_directory = "http"
+  http_directory = "${path.root}/http"
   http_port_min  = 8100
   http_port_max  = 8100
   boot_wait      = "10s"

@@ -22,6 +22,7 @@
 				"hashicorp.hcl",
 				"patbenatar.advanced-new-file",
 				"redhat.ansible",
+				"skellock.just"
 			]
 		}
 	},
