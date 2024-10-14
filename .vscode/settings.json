@@ -3,5 +3,8 @@
         "editor.formatOnSave": true,
 
     },
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+
+    // We run on the host network, so no port forwarding is necessary.
+    "remote.autoForwardPorts": false,
 }

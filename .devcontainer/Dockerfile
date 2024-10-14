@@ -21,6 +21,7 @@ RUN \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         consul \
         nomad \
+        packer \
         sshpass \
         vault \
     # Cannot use the vault binary without setting the capabilities:
@@ -31,4 +32,5 @@ RUN \
 USER vscode
 RUN consul -autocomplete-install \
     && nomad -autocomplete-install \
+    && packer -autocomplete-install \
     && vault -autocomplete-install

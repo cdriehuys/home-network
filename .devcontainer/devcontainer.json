@@ -1,16 +1,16 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/python
 {
-	"name": "Python 3",
+	"name": "Home Network",
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
-
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	// Run on the host network because Packer spins up an HTTP server that
+	// Proxmox needs to access, and it's way easier to not go through another
+	// level of port forwarding.
+	"runArgs": [
+		"--network=host"
+	],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "pip3 install --user -r requirements.txt && ansible-galaxy install -r requirements.yml",
@@ -26,6 +26,7 @@
 		}
 	},
 
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+	"features": {
+		"ghcr.io/devcontainers/features/terraform:1": {}
+	}
 }
