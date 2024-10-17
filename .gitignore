@@ -9,3 +9,6 @@ tfplan
 
 # Secrets for provisioning
 .vault_password
+
+# Kubeconfig with credentials
+kubeconfig.yaml

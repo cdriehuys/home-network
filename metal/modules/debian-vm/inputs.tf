@@ -29,3 +29,9 @@ variable "username" {
     description = "The name of the user created for provisioning the VM."
     default = "provisioning"
 }
+
+variable "ipv4_address" {
+    type = string
+    description = "Static IP address to assign"
+    default = ""
+}

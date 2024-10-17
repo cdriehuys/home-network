@@ -15,11 +15,10 @@ metal-provision:
     #!/usr/bin/env bash
     pushd ./metal
     terraform init
-    terraform plan | "${PAGER}"
     terraform apply
 
 # Configure VMs using Ansible
-metal-configure:
+metal-configure: && metal-fetch-kubeconfig
     #!/usr/bin/env bash
     key_file="$(mktemp)"
     function cleanup {
@@ -35,6 +34,32 @@ metal-configure:
         --private-key "${key_file}" \
         --inventory ./inventory \
         site.yml
+
+# Fetch the Kubernetes config file
+metal-fetch-kubeconfig:
+    #!/usr/bin/env bash
+    key_file="$(mktemp)"
+    function cleanup {
+        echo "Removing key file ${key_file}"
+        rm "${key_file}"
+    }
+    trap 'cleanup' EXIT
+
+    pushd ./metal
+    terraform output -raw provisioning_key_private > "${key_file}"
+
+    ansible-playbook \
+        --private-key "${key_file}" \
+        --inventory ./inventory \
+        download-kubeconfig.yml
+
+# Provision the platform used to run applications
+platform: metal-fetch-kubeconfig
+    #!/usr/bin/env bash
+    pushd ./platform
+    terraform init
+    terraform apply
+
 
 # SSH into a VM by name
 ssh vm:

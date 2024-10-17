@@ -24,6 +24,23 @@
   notify:
     - Restart unbound
 
+- name: Remove unprefixed files
+  become: true
+  ansible.builtin.file:
+    path: /etc/unbound/unbound.conf.d/{{ item.key }}
+    state: absent
+  loop: "{{ unbound_static_routes | dict2items }}"
+
+- name: Upload static routes
+  become: true
+  ansible.builtin.template:
+    src: unbound-static.conf.j2
+    dest: /etc/unbound/unbound.conf.d/{{ item.key }}.conf
+    mode: '644'
+  loop: "{{ unbound_static_routes | dict2items }}"
+  notify:
+    - Restart unbound
+
 - name: Upload service files for ad block update
   become: true
   ansible.builtin.template:

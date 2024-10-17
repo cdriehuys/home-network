@@ -1,5 +1,7 @@
 k3s_version: "v1.31.1+k3s1"
-extra_server_args: ""
+# Disable CNI plugin and network policy enforcer to allow for installing
+# Cilium later.
+extra_server_args: "--flannel-backend=none --disable-network-policy"
 extra_agent_args: ""
 
 token: "change-me-later"

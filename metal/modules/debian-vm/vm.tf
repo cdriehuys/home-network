@@ -57,6 +57,17 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   initialization {
+    dynamic "ip_config" {
+      for_each = var.ipv4_address == "" ? [] : [""]
+
+      content {
+        ipv4 {
+          address = "${var.ipv4_address}/24"
+          gateway = "192.168.1.1"
+        }
+      }
+    }
+
     user_account {
       keys     = [for key in var.authorized_keys : trimspace(key)]
       username = var.username

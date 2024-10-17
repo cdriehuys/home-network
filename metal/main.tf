@@ -45,6 +45,8 @@ module "k8s_server" {
   cpu_cores = 2
   memory = 2048
   authorized_keys = [resource.tls_private_key.provisioning_key.public_key_openssh]
+
+  ipv4_address = cidrhost(var.network_cidr, 5)
 }
 
 module "k8s_agents" {
@@ -58,6 +60,8 @@ module "k8s_agents" {
   cpu_cores = 1
   memory = 1024
   authorized_keys = [resource.tls_private_key.provisioning_key.public_key_openssh]
+
+  ipv4_address = cidrhost(var.network_cidr, 6 + count.index)
 }
 
 output "provisioning_key_private" {

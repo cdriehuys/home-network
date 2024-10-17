@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+
+server:
+    local-zone: "{{ item.value.hostname }}" redirect
+    {% for ip in item.value.ips %}local-data: "{{ item.value.hostname }} 30 IN A {{ ip }}"
+    {% endfor %}
