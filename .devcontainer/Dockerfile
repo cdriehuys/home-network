@@ -5,7 +5,8 @@ ENV ANSIBLE_HOST_KEY_CHECKING=False \
     PIP_NO_CACHE_DIR=off \
     CONSUL_HTTP_ADDR=http://consul.service.consul:8500 \
     NOMAD_ADDR=http://nomad.service.consul:4646 \
-    VAULT_ADDR=http://active.vault.service.consul:8200
+    VAULT_ADDR=http://active.vault.service.consul:8200 \
+    KUBECONFIG=/workspaces/home-network/platform/.kubeconfig
 
 RUN \
     # Hashicorp signing key
@@ -16,10 +17,12 @@ RUN \
     && apt-get update \
     # Install:
     # - Hashicorp tooling
+    # - Kubernetes client
     # - sshpass in order to connect to newly provisioned hosts with a username/
     #   password to upload an SSH key.
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         consul \
+        kubernetes-client \
         nomad \
         packer \
         sshpass \
@@ -28,7 +31,16 @@ RUN \
     # https://github.com/hashicorp/vault/issues/10924
     && setcap -r /usr/bin/vault
 
-# Enable autocompletion for Hashicorp tooling
+# ArgoCD CLI
+RUN curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 \
+    && install -m 555 argocd-linux-amd64 /usr/local/bin/argocd \
+    && rm argocd-linux-amd64
+
+# Completions system-wide
+RUN kubectl completion zsh > "/usr/share/zsh/vendor-completions/_kubectl" \
+    && argocd completion zsh > "/usr/share/zsh/vendor-completions/_argocd"
+
+# Competions just for the user
 USER vscode
 RUN consul -autocomplete-install \
     && nomad -autocomplete-install \
@@ -36,4 +48,5 @@ RUN consul -autocomplete-install \
     && vault -autocomplete-install
 
 # Install `just` locally. This will be available from apt in Debian 13.
-RUN pipx install rust-just
+RUN pipx install rust-just \
+    && just --completions zsh | sudo tee /usr/share/zsh/vendor-completions/_just

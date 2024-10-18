@@ -11,4 +11,4 @@ tfplan
 .vault_password
 
 # Kubeconfig with credentials
-kubeconfig.yaml
+.kubeconfig
