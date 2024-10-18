@@ -12,3 +12,18 @@ homepage:
       tls:
         - hosts:
             - *host
+
+  config:
+    widgets:
+      - kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: "cluster"
+        nodes:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
