@@ -12,6 +12,7 @@ homepage:
       tls:
         - hosts:
             - *host
+          secretName: homepage-ingress-cert
 
   config:
     bookmarks: []
