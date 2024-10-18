@@ -14,6 +14,8 @@ homepage:
             - *host
 
   config:
+    bookmarks: []
+
     services:
       - Media:
         - Plex:
@@ -29,4 +31,6 @@ homepage:
             icon: radarr
             href: https://radarr.proxy.lan.qidux.com
             description: Manage movies.
+
+    widgets: []
 
