@@ -75,7 +75,7 @@ resource "helm_release" "argocd" {
 resource "kubernetes_ingress_v1" "argocd_ingress" {
   metadata {
     annotations = {
-      "cert-manager.io/cluster-issuer" = "letsencrypt-staging"
+      "cert-manager.io/cluster-issuer" = "letsencrypt-production"
     }
     name      = "argocd-ingress"
     namespace = local.argocd_namespace
