@@ -1,4 +1,10 @@
 homepage:
+  enableRbac: true
+
+  serviceAccount:
+    create: true
+    name: homepage
+
   ingress:
     main:
       enabled: true
@@ -15,7 +21,7 @@ homepage:
 
   config:
     kubernetes:
-      mode: default
+      mode: cluster
 
     widgets:
       - kubernetes:
