@@ -31,6 +31,14 @@ homepage:
             icon: radarr
             href: https://radarr.proxy.lan.qidux.com
             description: Manage movies.
+        - Prowlarr:
+            icon: prowlarr
+            href: https://prowlarr.proxy.lan.qidux.com
+            description: Manage indexers.
+        - SABnzbd:
+            icon: sabnzbd
+            href: https://sabnzbd.proxy.lan.qidux.com
+            description: Manage downloads.
 
     widgets: []
 
