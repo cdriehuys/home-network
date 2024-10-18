@@ -17,7 +17,16 @@ homepage:
     services:
       - Media:
         - Plex:
-            icon: plex.png
+            icon: plex
             href: http://plex.lan.qidux.com:32400/web
             description: Watch movies and TV shows.
+      - Management:
+        - Sonarr:
+            icon: sonarr
+            href: https://sonarr.proxy.lan.qidux.com
+            description: Manage TV shows.
+        - Radarr:
+            icon: radarr
+            href: https://radarr.proxy.lan.qidux.com
+            description: Manage movies.
 
