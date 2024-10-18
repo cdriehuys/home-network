@@ -3,14 +3,17 @@ default:
     @just --list
 
 # Create template for Proxmox VMs using Packer
+[group('metal')]
 create-vm-template:
     packer init ./metal/packer
     packer build ./metal/packer
 
 # All bare metal configuration steps
+[group('metal')]
 metal: metal-provision metal-configure
 
 # Provision Proxmox VMs
+[group('metal')]
 metal-provision:
     #!/usr/bin/env bash
     pushd ./metal
@@ -18,6 +21,7 @@ metal-provision:
     terraform apply
 
 # Configure VMs using Ansible
+[group('metal')]
 metal-configure: && metal-fetch-kubeconfig
     #!/usr/bin/env bash
     key_file="$(mktemp)"
@@ -36,6 +40,7 @@ metal-configure: && metal-fetch-kubeconfig
         site.yml
 
 # Fetch the Kubernetes config file
+[group('metal')]
 metal-fetch-kubeconfig:
     #!/usr/bin/env bash
     key_file="$(mktemp)"
@@ -54,6 +59,7 @@ metal-fetch-kubeconfig:
         download-kubeconfig.yml
 
 # Provision the platform used to run applications
+[group('platform')]
 platform: metal-fetch-kubeconfig
     #!/usr/bin/env bash
     pushd ./platform

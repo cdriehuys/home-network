@@ -46,7 +46,6 @@ resource "kubernetes_secret" "cloudflare_api_token" {
 resource "kubernetes_manifest" "issuer_acme_staging" {
   depends_on = [helm_release.cert_manager]
 
-  # manifest = yamldecode(local.issuer_acme_staging_manifest)
   manifest = {
     apiVersion = "cert-manager.io/v1"
     kind       = "ClusterIssuer"
@@ -78,3 +77,39 @@ resource "kubernetes_manifest" "issuer_acme_staging" {
     }
   }
 }
+
+resource "kubernetes_manifest" "issuer_acme_production" {
+  depends_on = [helm_release.cert_manager]
+
+  manifest = {
+    apiVersion = "cert-manager.io/v1"
+    kind       = "ClusterIssuer"
+    metadata = {
+      name = "letsencrypt-production"
+    }
+
+    spec = {
+      acme = {
+        email  = var.email
+        server = "https://acme-v02.api.letsencrypt.org/directory"
+        privateKeySecretRef = {
+          name = "issuer-letsencrypt-production-account-key"
+        }
+
+        solvers = [
+          {
+            dns01 = {
+              cloudflare = {
+                apiTokenSecretRef = {
+                  name = local.cloudflare_token_secret_name
+                  key  = "api-token"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
