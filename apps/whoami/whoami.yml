@@ -57,4 +57,4 @@ spec:
   tls:
     - hosts:
         - whoami.proxy2.lan.qidux.com
-      secret_name: whoami-ingress-cert
+      secretName: whoami-ingress-cert
