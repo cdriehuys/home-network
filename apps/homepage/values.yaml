@@ -1,10 +1,4 @@
 homepage:
-  enableRbac: true
-
-  serviceAccount:
-    create: true
-    name: homepage
-
   ingress:
     main:
       enabled: true
@@ -20,19 +14,10 @@ homepage:
             - *host
 
   config:
-    kubernetes:
-      mode: cluster
+    services:
+      - Media:
+        - Plex:
+            icon: plex.png
+            href: http://plex.lan.qidux.com:32400/web
+            description: Watch movies and TV shows.
 
-    widgets:
-      - kubernetes:
-        cluster:
-          show: true
-          cpu: true
-          memory: true
-          showLabel: true
-          label: "cluster"
-        nodes:
-          show: true
-          cpu: true
-          memory: true
-          showLabel: true
