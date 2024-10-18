@@ -44,16 +44,16 @@ metadata:
   name: whoami-ingress
 spec:
   rules:
-  - http:
-      host: whoami.proxy2.lan.qidux.com
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: whoami
-            port:
-              name: web
+    - host: whoami.proxy2.lan.qidux.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: whoami
+                port:
+                  name: web
   tls:
     - hosts:
         - whoami.proxy2.lan.qidux.com
