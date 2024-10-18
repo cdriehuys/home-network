@@ -91,3 +91,19 @@ ssh vm:
 
     echo "Connecting to {{ vm }} through ${ip}"
     ssh -i "${key_file}" -o StrictHostKeyChecking=no "provisioning@${ip}"
+
+# Reset the initial Argo CD password
+[group('platform')]
+reset-initial-argocd-password: metal-fetch-kubeconfig
+    #!/usr/bin/env bash
+    set -euf
+
+    export ARGOCD_SERVER=argocd.proxy2.lan.qidux.com:443
+    initial_password="$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)"
+    argocd account update-password \
+        --account admin \
+        --current-password "${initial_password}" \
+        --grpc-web
+
+    # If the above completed successfully, we can delete the secret.
+    kubectl -n argocd delete secret argocd-initial-admin-secret
