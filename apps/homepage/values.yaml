@@ -6,7 +6,7 @@ homepage:
     main:
       enabled: true
       annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-staging
+        cert-manager.io/cluster-issuer: letsencrypt-production
       hosts:
         - host: &host homepage.proxy2.lan.qidux.com
           paths:
