@@ -1,4 +1,7 @@
 homepage:
+  image:
+    tag: v0.9.11
+
   ingress:
     main:
       enabled: true
