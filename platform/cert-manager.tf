@@ -113,3 +113,23 @@ resource "kubernetes_manifest" "issuer_acme_production" {
   }
 }
 
+resource "kubernetes_manifest" "wilcard_cert" {
+  manifest = {
+    apiVersion = "cert-manager.io/v1"
+    kind       = "Certificate"
+    metadata = {
+      name      = "lan-wildcard"
+      namespace = "default"
+    }
+
+    spec = {
+      secretName = "lan-wildcard-tls"
+      dnsNames   = ["proxy2.lan.qidux.com", "*.proxy2.lan.qidux.com"]
+      issuerRef = {
+        name = "letsencrypt-production"
+        kind = "ClusterIssuer"
+      }
+    }
+  }
+}
+

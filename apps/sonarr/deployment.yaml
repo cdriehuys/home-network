@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+  labels:
+    app: sonarr
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarr
+
+  template:
+    metadata:
+      labels:
+        app: sonarr
+
+    spec:
+      containers:
+        - name: sonarr
+          image: linuxserver/sonarr:4.0.9
+          ports:
+            - containerPort: 8989
+          volumeMounts:
+            - name: config
+              mountPath: /config
+
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: sonarr-config-claim

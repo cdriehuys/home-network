@@ -22,12 +22,12 @@ terraform {
 
 provider "helm" {
   kubernetes {
-    config_path = "./kubeconfig.yaml"
+    config_path = "./.kubeconfig"
   }
 }
 
 provider "kubernetes" {
-  config_path = "./kubeconfig.yaml"
+  config_path = "./.kubeconfig"
 }
 
 resource "helm_release" "cilium" {

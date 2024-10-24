@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sonarr-ingress
+
+spec:
+  rules:
+    - host: sonarr.proxy2.lan.qidux.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: sonarr
+                port:
+                  name: http
+
+  tls:
+    - hosts:
+        - sonarr.proxy2.lan.qidux.com
+      secretName: lan-wildcard-tls

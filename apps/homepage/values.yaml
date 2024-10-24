@@ -5,17 +5,15 @@ homepage:
   ingress:
     main:
       enabled: true
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-production
       hosts:
-        - host: &host homepage.proxy2.lan.qidux.com
+        - host: &host proxy2.lan.qidux.com
           paths:
             - path: /
               pathType: Prefix
       tls:
         - hosts:
             - *host
-          secretName: homepage-ingress-cert
+          secretName: lan-wildcard-tls
 
   config:
     bookmarks: []
