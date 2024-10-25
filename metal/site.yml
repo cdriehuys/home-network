@@ -14,3 +14,9 @@
 
   roles:
     - name: k3s.orchestration.k3s_agent
+
+  tasks:
+    - name: Install NFS client
+      ansible.builtin.package:
+        name: nfs-common
+        state: present

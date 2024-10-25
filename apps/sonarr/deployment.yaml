@@ -25,8 +25,13 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
+            - name: media
+              mountPath: /data
 
       volumes:
         - name: config
           persistentVolumeClaim:
             claimName: sonarr-config-claim
+        - name: media
+          persistentVolumeClaim:
+            claimName: nfs-media
