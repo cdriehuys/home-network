@@ -27,7 +27,7 @@ homepage:
       - Management:
         - Sonarr:
             icon: sonarr
-            href: https://sonarr.proxy.lan.qidux.com
+            href: https://sonarr.proxy2.lan.qidux.com
             description: Manage TV shows.
         - Radarr:
             icon: radarr
