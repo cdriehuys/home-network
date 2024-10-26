@@ -36,9 +36,18 @@ RUN curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases
     && install -m 555 argocd-linux-amd64 /usr/local/bin/argocd \
     && rm argocd-linux-amd64
 
+ARG HELM_VERSION=3.16.2
+ARG HELM_CHECKSUM=9318379b847e333460d33d291d4c088156299a26cd93d570a7f5d0c36e50b5bb
+RUN curl -sSL -o /tmp/helm.tar.gz https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz \
+    && echo "${HELM_CHECKSUM} helm.tar.gz" | sha256sum -c - \
+    && tar -C /tmp -xzf /tmp/helm.tar.gz \
+    && install /tmp/linux-amd64/helm /usr/local/bin/helm \
+    && rm /tmp/helm.tar.gz
+
 # Completions system-wide
 RUN kubectl completion zsh > "/usr/share/zsh/vendor-completions/_kubectl" \
-    && argocd completion zsh > "/usr/share/zsh/vendor-completions/_argocd"
+    && argocd completion zsh > "/usr/share/zsh/vendor-completions/_argocd" \
+    && helm completion zsh > "/usr/share/zsh/vendor-completions/_helm"
 
 # Competions just for the user
 USER vscode
