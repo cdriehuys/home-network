@@ -31,7 +31,7 @@ homepage:
             description: Manage TV shows.
         - Radarr:
             icon: radarr
-            href: https://radarr.proxy.lan.qidux.com
+            href: https://radarr.proxy2.lan.qidux.com
             description: Manage movies.
         - Prowlarr:
             icon: prowlarr
