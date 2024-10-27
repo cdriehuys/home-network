@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: monitoring
+  labels:
+    app: prometheus
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+
+  template:
+    metadata:
+      labels:
+        app: prometheus
+
+    spec:
+      serviceAccountName: prometheus
+
+      # If the old container is still running, it holds the lockfile for the
+      # DB and causes the new pod to fail. We sacrifice a little bit of downtime
+      # to ensure the new container comes up.
+      strategy:
+        type: Recreate
+
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v2.55.0
+          ports:
+            - containerPort: 9090
+              name: http
+          volumeMounts:
+            - name: config
+              mountPath: /etc/prometheus/prometheus.yml
+              subPath: prometheus.yml
+            - name: data
+              mountPath: /prometheus
+
+      volumes:
+        - name: config
+          configMap:
+            name: prometheus-config-v4
+        - name: data
+          persistentVolumeClaim:
+            claimName: prometheus-data-claim

@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus-ingress
+  namespace: monitoring
+
+spec:
+  rules:
+    - host: &host prometheus.proxy2.lan.qidux.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus
+                port:
+                  name: http
+
+  tls:
+    - hosts:
+        - *host
+      secretName: lan-wildcard-tls
