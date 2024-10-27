@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: prometheus-config-v4
+  name: prometheus-config-v5
   namespace: monitoring
 data:
   prometheus.yml: |
@@ -39,3 +39,6 @@ data:
           - source_labels: [__meta_kubernetes_pod_name]
             action: replace
             target_label: kubernetes_pod
+          - source_labels: [__meta_kubernetes_endpoint_node_name]
+            action: replace
+            target_label: kubernetes_node
