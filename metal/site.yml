@@ -15,6 +15,11 @@
   roles:
     - name: k3s.orchestration.k3s_agent
 
+- name: Common utilities
+  hosts: all
+  remote_user: provisioning
+  become: true
+
   tasks:
     - name: Install NFS client
       ansible.builtin.package:

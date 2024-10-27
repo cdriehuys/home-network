@@ -1,0 +1,9 @@
+apiVersion: v2
+name: sabnzbd
+description: A Helm chart for SABnzbd
+type: application
+version: 0.0.0
+
+# SABnzbd version:
+# https://github.com/linuxserver/docker-sabnzbd/pkgs/container/sabnzbd/versions?filters%5Bversion_type%5D=tagged
+appVersion: "4.3.3"

@@ -39,7 +39,7 @@ homepage:
             description: Manage indexers.
         - SABnzbd:
             icon: sabnzbd
-            href: https://sabnzbd.proxy.lan.qidux.com
+            href: https://sabnzbd.proxy2.lan.qidux.com
             description: Manage downloads.
 
     widgets: []
