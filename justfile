@@ -43,6 +43,14 @@ metal-configure: && metal-fetch-kubeconfig
 [group('metal')]
 metal-fetch-kubeconfig:
     #!/usr/bin/env bash
+    set -euf
+
+    auth_check="$(kubectl auth can-i get pods)"
+    if [[ "${auth_check}" = "yes" ]]; then
+        echo "Valid Kubernetes config already present"
+        exit 0
+    fi
+
     key_file="$(mktemp)"
     function cleanup {
         echo "Removing key file ${key_file}"
