@@ -29,11 +29,11 @@ def vms_as_inventory(vms: dict[str]) -> dict[str, dict]:
         },
         "k3s_server": {
             "children": [],
-            "hosts": [vms["k8s_server"]]
+            "hosts": [vms["k8s-server"]]
         },
         "k3s_agents": {
             "children": [],
-            "hosts": vms.get("k8s_agents", [])
+            "hosts": [ip for vm, ip in vms.items() if vm.startswith("k8s-agent")]
         }
     }
 

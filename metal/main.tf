@@ -75,9 +75,15 @@ output "provisioning_key_public" {
   value = resource.tls_private_key.provisioning_key.public_key_openssh
 }
 
-output "vms" {
-  value = {
-    "k8s_server": module.k8s_server.ipv4_address,
-    "k8s_agents": [for vm in module.k8s_agents : vm.ipv4_address]
+locals {
+  k8s_agents = {
+    for vm in module.k8s_agents : vm.name => vm.ipv4_address
   }
+}
+
+output "vms" {
+  description = "A mapping of VM names to their IPv4 addresses"
+  value = merge(local.k8s_agents, {
+    "k8s-server" = module.k8s_server.ipv4_address
+  })
 }
