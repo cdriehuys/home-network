@@ -8,69 +8,6 @@ job "media" {
         value = "compute"
     }
 
-    group "prowlarr" {
-        constraint {
-            attribute = "${node.unique.name}"
-            operator = "=="
-            value = "nomadcompute1"
-        }
-
-        restart {
-            delay = "15s"
-            interval = "5m"
-            mode = "delay"
-        }
-
-        network {
-            port "http" {
-                to = 9696
-            }
-        }
-
-        volume "prowlarr" {
-            type = "host"
-            read_only = false
-            source = "prowlarr"
-        }
-
-        task "prowlarr" {
-            driver = "docker"
-
-            service {
-                name = "prowlarr"
-                port = "http"
-
-                tags = [
-                    "traefik.enable=true",
-                    "traefik.http.routers.prowlarr.rule=Host(`prowlarr.proxy.lan.qidux.com`)",
-                    "traefik.http.routers.prowlarr.tls.certresolver=lan",
-                ]
-
-                check {
-                    type = "tcp"
-                    port = "http"
-                    interval = "10s"
-                    timeout = "2s"
-                }
-            }
-
-            config {
-                image = "ghcr.io/linuxserver/prowlarr:1.23.1"
-                ports = ["http"]
-
-                volumes = [
-                    "/nfs/media:/data"
-                ]
-            }
-
-            volume_mount {
-                volume = "prowlarr"
-                destination = "/config"
-                read_only = false
-            }
-        }
-    }
-
     group "sabnzbd" {
         constraint {
             attribute = "${node.unique.name}"
