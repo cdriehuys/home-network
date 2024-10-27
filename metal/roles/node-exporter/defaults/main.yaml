@@ -1,0 +1,7 @@
+# Map of Ansible architecture names to the architecture names used in
+# node_exporter releases.
+node_exporter_architectures:
+  x86_64: amd64
+
+# User for running node_exporter
+node_exporter_user: node_exporter

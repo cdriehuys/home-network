@@ -1,27 +1,38 @@
 ---
-- name: K3s Server
-  hosts: k3s_server
-  remote_user: provisioning
+# - name: K8s Server
+#   hosts: k8s_server
+#   remote_user: provisioning
+#   become: true
+
+#   roles:
+#     - name: k3s.orchestration.k3s_server
+
+# - name: K8s Agents
+#   hosts: k8s_agents
+#   remote_user: provisioning
+#   become: true
+
+#   roles:
+#     - name: k3s.orchestration.k3s_agent
+
+# - name: Common utilities
+#   hosts: k8s
+#   remote_user: provisioning
+#   become: true
+
+#   tasks:
+#     - name: Install NFS client
+#       ansible.builtin.package:
+#         name: nfs-common
+#         state: present
+
+- name: Node exporter
+  hosts: metal
+  remote_user: root
   become: true
 
   roles:
-    - name: k3s.orchestration.k3s_server
-
-- name: K3s Agents
-  hosts: k3s_agents
-  remote_user: provisioning
-  become: true
-
-  roles:
-    - name: k3s.orchestration.k3s_agent
-
-- name: Common utilities
-  hosts: all
-  remote_user: provisioning
-  become: true
-
-  tasks:
-    - name: Install NFS client
-      ansible.builtin.package:
-        name: nfs-common
-        state: present
+    - name: node-exporter
+      version: "1.8.2"
+      checksums:
+        amd64: "6809dd0b3ec45fd6e992c19071d6b5253aed3ead7bf0686885a51d85c6643c66"

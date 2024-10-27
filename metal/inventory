@@ -22,18 +22,23 @@ def vms_as_inventory(vms: dict[str]) -> dict[str, dict]:
             "hostvars": {},
         },
         "all": {
-            "children": ["k3s"],
+            "children": ["k8s", "metal"],
         },
-        "k3s": {
-            "children": ["k3s_server", "k3s_agents"],
+        "k8s": {
+            "children": ["k8s_server", "k8s_agents"],
         },
-        "k3s_server": {
+        "k8s_server": {
             "children": [],
             "hosts": [vms["k8s-server"]]
         },
-        "k3s_agents": {
+        "k8s_agents": {
             "children": [],
             "hosts": [ip for vm, ip in vms.items() if vm.startswith("k8s-agent")]
+        },
+        "metal": {
+            "hosts": [
+                "pve.lan.qidux.com",
+            ]
         }
     }
 

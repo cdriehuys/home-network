@@ -1,0 +1,86 @@
+- name: Create node exporter user
+  become: true
+  ansible.builtin.user:
+    name: "{{ node_exporter_user }}"
+    system: true
+    shell: /bin/false
+    home: /var/lib/node_exporter
+
+- name: Set architecture
+  ansible.builtin.set_fact:
+    node_exporter_arch: "{{ node_exporter_architectures[ansible_architecture] }}"
+
+- name: Determine name of release archive
+  ansible.builtin.set_fact:
+    node_exporter_archive: "node_exporter-{{ version }}.linux-{{ node_exporter_arch }}.tar.gz"
+
+- name: Get currently installed version
+  ansible.builtin.command: /var/lib/node_exporter/node_exporter-{{ version }}.linux-{{ node_exporter_arch }}/node_exporter --version
+  register: node_exporter_version_output
+  ignore_errors: true
+  changed_when: false
+
+- name: Extract currently installed version number
+  ansible.builtin.set_fact:
+    node_exporter_version: "{{ node_exporter_version_output.stdout | default('') | regex_search('node_exporter, version ([0-9.]+).*', '\\1') or [''] | first }}"
+
+- name: Install node exporter {{ version }}
+  when: node_exporter_version != version
+  block:
+    - name: Explain installation
+      ansible.builtin.debug:
+        msg: "Installing node exporter {{ version }} because the current version is {{ node_exporter_version or '<not installed>' }}"
+
+    - name: Create release archives directory
+      become: true
+      ansible.builtin.file:
+        path: /var/lib/node_exporter/release-archives
+        state: directory
+        owner: node_exporter
+        group: node_exporter
+        mode: "755"
+
+    - name: Download node exporter
+      become: true
+      ansible.builtin.get_url:
+        checksum: "sha256:{{ checksums[node_exporter_arch] }}"
+        url: "https://github.com/prometheus/node_exporter/releases/download/v{{ version }}/{{ node_exporter_archive }}"
+        dest: "/var/lib/node_exporter/release-archives/{{ node_exporter_archive }}"
+        owner: "{{ node_exporter_user }}"
+        group: "{{ node_exporter_user }}"
+        mode: "644"
+
+    - name: Extract node exporter
+      become: true
+      ansible.builtin.unarchive:
+        src: "/var/lib/node_exporter/release-archives/{{ node_exporter_archive }}"
+        remote_src: true
+        dest: /var/lib/node_exporter/
+        owner: "{{ node_exporter_user }}"
+        group: "{{ node_exporter_user }}"
+  notify: Restart node exporter
+
+- name: Upload service file
+  become: true
+  ansible.builtin.template:
+    src: node-exporter.service.j2
+    dest: /etc/systemd/system/node-exporter.service
+    owner: root
+    group: root
+    mode: "644"
+  register: node_exporter_service
+  notify: Restart node exporter
+
+- name: Reload systemd
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: node_exporter_service.changed
+
+- name: Start node exporter
+  become: true
+  ansible.builtin.systemd:
+    name: node-exporter
+    state: started
+    enabled: true
+
