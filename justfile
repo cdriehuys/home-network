@@ -66,16 +66,9 @@ metal-fetch-kubeconfig:
         --inventory ./inventory \
         download-kubeconfig.yml
 
-# Provision the platform used to run applications
-[group('platform')]
-platform: metal-fetch-kubeconfig
-    #!/usr/bin/env bash
-    pushd ./platform
-    terraform init
-    terraform apply
-
 
 # SSH into a VM by name
+[group('metal')]
 ssh vm:
     #!/usr/bin/env bash
     key_file="$(mktemp)"
@@ -100,6 +93,14 @@ ssh vm:
     echo "Connecting to {{ vm }} through ${ip}"
     ssh -i "${key_file}" -o StrictHostKeyChecking=no "provisioning@${ip}"
 
+# Provision the platform used to run applications
+[group('platform')]
+platform: metal-fetch-kubeconfig
+    #!/usr/bin/env bash
+    pushd ./platform
+    terraform init
+    terraform apply
+
 # Reset the initial Argo CD password
 [group('platform')]
 reset-initial-argocd-password: metal-fetch-kubeconfig
@@ -115,3 +116,11 @@ reset-initial-argocd-password: metal-fetch-kubeconfig
 
     # If the above completed successfully, we can delete the secret.
     kubectl -n argocd delete secret argocd-initial-admin-secret
+
+# Configure the applications running on the platform
+[group('apps')]
+apps:
+    #!/usr/bin/env bash
+    pushd ./apps
+    terraform init
+    terraform apply

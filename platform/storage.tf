@@ -21,6 +21,7 @@ resource "kubernetes_persistent_volume" "nfs_media" {
 resource "kubernetes_persistent_volume_claim" "nfs_media" {
   metadata {
     name = "nfs-media"
+    namespace = "media"
   }
 
   spec {

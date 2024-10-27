@@ -72,9 +72,6 @@ volumes:
   - name: config
     persistentVolumeClaim:
       claimName: "prowlarr-config-claim"
-  - name: media
-    persistentVolumeClaim:
-      claimName: nfs-media
 
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts:

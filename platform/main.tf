@@ -47,6 +47,11 @@ resource "helm_release" "cilium" {
 
 locals {
   argocd_namespace = "argocd"
+  argocd_provisioner = "provisioner"
+
+  argocd_rbac_policy = <<EOF
+g, ${local.argocd_provisioner}, role:admin
+EOF
 }
 
 resource "helm_release" "argocd" {
@@ -58,7 +63,6 @@ resource "helm_release" "argocd" {
   version    = "7.6.9"
 
   namespace = local.argocd_namespace
-
   create_namespace = true
 
   set_list {
@@ -70,13 +74,20 @@ resource "helm_release" "argocd" {
     name  = "global.domain"
     value = "argocd.proxy2.lan.qidux.com"
   }
+
+  set {
+    name = "configs.cm.accounts\\.${local.argocd_provisioner}"
+    value = "apiKey\\, login"
+  }
+
+  set {
+    name = "configs.rbac.policy\\.csv"
+    value = replace(local.argocd_rbac_policy, ",", "\\,")
+  }
 }
 
 resource "kubernetes_ingress_v1" "argocd_ingress" {
   metadata {
-    annotations = {
-      "cert-manager.io/cluster-issuer" = "letsencrypt-production"
-    }
     name      = "argocd-ingress"
     namespace = local.argocd_namespace
   }
@@ -102,7 +113,7 @@ resource "kubernetes_ingress_v1" "argocd_ingress" {
 
     tls {
       hosts = ["argocd.proxy2.lan.qidux.com"]
-      secret_name = "argocd-ingress-cert"
+      secret_name = "lan-wildcard-tls"
     }
   }
 }
