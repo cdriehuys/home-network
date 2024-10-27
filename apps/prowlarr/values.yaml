@@ -77,8 +77,6 @@ volumes:
 volumeMounts:
   - name: config
     mountPath: /config
-  - name: media
-    mountPath: /data
 
 nodeSelector: {}
 
