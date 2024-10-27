@@ -12,6 +12,12 @@ spec:
     matchLabels:
       app: prometheus
 
+  # If the old container is still running, it holds the lockfile for the DB and
+  # causes the new pod to fail. We sacrifice a little bit of downtime to ensure
+  # the new container comes up.
+  strategy:
+    type: Recreate
+
   template:
     metadata:
       labels:
@@ -19,12 +25,6 @@ spec:
 
     spec:
       serviceAccountName: prometheus
-
-      # If the old container is still running, it holds the lockfile for the
-      # DB and causes the new pod to fail. We sacrifice a little bit of downtime
-      # to ensure the new container comes up.
-      strategy:
-        type: Recreate
 
       containers:
         - name: prometheus
