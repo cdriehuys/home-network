@@ -17,6 +17,11 @@ variable "apps" {
   description = "Applications to deploy"
 
   default = {
+    "grafana" = {
+      namespace = "monitoring"
+      path      = "apps/grafana"
+      revision = "grafana"
+    }
     "homepage" = {
       namespace = "homepage"
       path      = "apps/homepage"
