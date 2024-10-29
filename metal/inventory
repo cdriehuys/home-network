@@ -36,10 +36,17 @@ def vms_as_inventory(vms: dict[str]) -> dict[str, dict]:
             "hosts": [ip for vm, ip in vms.items() if vm.startswith("k8s-agent")]
         },
         "metal": {
+            "children": ["proxmox", "dns"],
+        },
+        "proxmox": {
             "hosts": [
                 "pve.lan.qidux.com",
             ]
-        }
+        },
+        "dns": {
+            "children": [],
+            "hosts": ["ns1.lan.qidux.com", "ns2.lan.qidux.com"],
+        },
     }
 
 
