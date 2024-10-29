@@ -43,6 +43,11 @@ resource "helm_release" "cilium" {
     name  = "operator.replicas"
     value = "1"
   }
+
+  set {
+    name  = "prometheus.enabled"
+    value = "true"
+  }
 }
 
 locals {
