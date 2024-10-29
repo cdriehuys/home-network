@@ -32,6 +32,7 @@ variable "apps" {
     "prometheus" = {
         namespace = "monitoring"
         path      = "apps/prometheus"
+        revision = "dns-metrics"
     }
     "prowlarr" = {
         namespace = "media"
