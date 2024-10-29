@@ -8,6 +8,30 @@ import sys
 
 logger = logging.getLogger(__name__)
 
+BASE_INVENTORY = {
+    "_meta": {
+        "hostvars": {},
+    },
+    "all": {
+        "children": ["k8s", "metal"],
+    },
+    "k8s": {
+        "children": ["k8s_server", "k8s_agents"],
+    },
+    "metal": {
+        "children": ["proxmox", "dns"],
+    },
+    "proxmox": {
+        "hosts": [
+            "pve.lan.qidux.com",
+        ]
+    },
+    "dns": {
+        "children": [],
+        "hosts": ["ns1.lan.qidux.com", "ns2.lan.qidux.com"],
+    },
+}
+
 
 def read_vm_info() -> dict[str]:
     output = subprocess.check_output(["terraform", "output", "-json", "vms"])
@@ -18,15 +42,6 @@ def read_vm_info() -> dict[str]:
 
 def vms_as_inventory(vms: dict[str]) -> dict[str, dict]:
     return {
-        "_meta": {
-            "hostvars": {},
-        },
-        "all": {
-            "children": ["k8s", "metal"],
-        },
-        "k8s": {
-            "children": ["k8s_server", "k8s_agents"],
-        },
         "k8s_server": {
             "children": [],
             "hosts": [vms["k8s-server"]]
@@ -35,11 +50,6 @@ def vms_as_inventory(vms: dict[str]) -> dict[str, dict]:
             "children": [],
             "hosts": [ip for vm, ip in vms.items() if vm.startswith("k8s-agent")]
         },
-        "metal": {
-            "hosts": [
-                "pve.lan.qidux.com",
-            ]
-        }
     }
 
 
@@ -60,7 +70,7 @@ def main(args: list[str]):
     if parsed.list:
         logger.info("Listing all hosts.")
         vms = read_vm_info()
-        inventory = vms_as_inventory(vms)
+        inventory = {**BASE_INVENTORY, **vms_as_inventory(vms)}
         json.dump(inventory, sys.stdout)
     elif parsed.host:
         logger.info("Outputting variables for %s", parsed.host)

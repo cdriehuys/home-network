@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: prometheus-config-v8
+  name: prometheus-config-v10
   namespace: monitoring
 data:
   prometheus.yml: |
@@ -12,6 +12,8 @@ data:
       - job_name: 'bare-metal'
         static_configs:
           - targets:
+            - ns1.lan.qidux.com:9100
+            - ns2.lan.qidux.com:9100
             - pve.lan.qidux.com:9100
 
       - job_name: 'kubernetes-nodes'

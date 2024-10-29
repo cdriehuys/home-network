@@ -22,7 +22,7 @@
 
 - name: Extract currently installed version number
   ansible.builtin.set_fact:
-    node_exporter_version: "{{ node_exporter_version_output.stdout | default('') | regex_search('node_exporter, version ([0-9.]+).*', '\\1') or [''] | first }}"
+    node_exporter_version: "{{ (node_exporter_version_output.stdout | default('') | regex_search('node_exporter, version ([0-9.]+).*', '\\1') or [''])[0] }}"
 
 - name: Install node exporter {{ version }}
   when: node_exporter_version != version
