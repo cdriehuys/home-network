@@ -93,6 +93,20 @@ ssh vm:
     echo "Connecting to {{ vm }} through ${ip}"
     ssh -i "${key_file}" -o StrictHostKeyChecking=no "provisioning@${ip}"
 
+# Output the public key used for provisioning
+[group('metal')]
+give-me-the-public-key:
+    #!/usr/bin/env bash
+    pushd ./metal > /dev/null
+    terraform output -raw provisioning_key_public
+
+# Output the private key used for provisioning
+[group('metal')]
+give-me-the-private-key:
+    #!/usr/bin/env bash
+    pushd ./metal > /dev/null
+    terraform output -raw provisioning_key_private
+
 # Provision the platform used to run applications
 [group('platform')]
 platform: metal-fetch-kubeconfig

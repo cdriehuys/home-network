@@ -1,9 +1,38 @@
 # Metal Provisioning
 
-These steps encompass the provisioning steps performed on the bare-metal Proxmox
-machines to configure them for running app workloads.
+These steps encompass the provisioning steps performed on the bare-metal hosts
+to configure them for running application workloads.
 
-# Proxmox Authentication
+## Shell Provisioning
+
+In order to connect to the hosts for provisioning, Ansible expects there to be a
+provisioning account with passwordless `sudo` access that accepts the
+provisioning key for authentication.
+
+### Debian
+
+```shell
+apt update
+apt install sudo
+
+# Allow passwordless sudo either for the `provisioning` user or its group.
+visudo
+
+# Create the provisioning user
+adduser --comment "" --disabled-password provisioning
+usermod -aG sudo provisioning
+
+# Add the authorized SSH key for the new user. The key can be obtained locally
+# with `just give-me-the-public-key`.
+mkdir ~provisioning/.ssh
+echo "<public key>" > ~provisioning/.ssh/authorized_keys
+
+chmod -R provisioning:provisioning ~provisioning/.ssh
+chmod 700 ~provisioning/.ssh
+chmod 600 ~provisioning/.ssh/authorized_keys
+```
+
+## Proxmox Authentication
 
 Proxmox provisioning is performed through Terraform. In order to authenticate
 with Proxmox, a provisioning user must be created. This can be done through the
