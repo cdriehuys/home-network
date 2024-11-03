@@ -19,7 +19,9 @@ spec:
     spec:
       containers:
         - name: sonarr
-          image: linuxserver/sonarr:4.0.9
+          # All tags:
+          # https://github.com/linuxserver/docker-sonarr/pkgs/container/sonarr/versions?filters%5Bversion_type%5D=tagged
+          image: linuxserver/sonarr:4.0.10
           ports:
             - containerPort: 8989
           volumeMounts:
