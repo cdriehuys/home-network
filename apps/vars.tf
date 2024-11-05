@@ -37,6 +37,10 @@ variable "apps" {
         namespace = "media"
         path      = "apps/prowlarr"
     }
+    "qbittorrent" = {
+        namespace = "media"
+        path      = "apps/qbittorrent"
+    }
     "radarr" = {
         namespace = "media"
         path      = "apps/radarr"

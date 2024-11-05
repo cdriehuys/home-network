@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+  labels:
+    app: qbittorrent
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qbittorrent
+
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+
+    spec:
+      containers:
+        - name: qbittorrent
+          # All tags:
+          # https://github.com/linuxserver/docker-qbittorrent/pkgs/container/qbittorrent/versions?filters%5Bversion_type%5D=tagged
+          image: linuxserver/qbittorrent:5.0.1
+          ports:
+            - containerPort: 8080
+            - containerPort: 6881
+              protocol: TCP
+            - containerPort: 6881
+              protocol: UDP
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: media
+              mountPath: /data
+
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: qbittorrent-config-claim
+        - name: media
+          persistentVolumeClaim:
+            claimName: nfs-media
