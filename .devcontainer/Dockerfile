@@ -39,10 +39,16 @@ RUN curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases
 ARG HELM_VERSION=3.16.2
 ARG HELM_CHECKSUM=9318379b847e333460d33d291d4c088156299a26cd93d570a7f5d0c36e50b5bb
 RUN curl -sSL -o /tmp/helm.tar.gz https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz \
-    && echo "${HELM_CHECKSUM} helm.tar.gz" | sha256sum -c - \
+    && echo "${HELM_CHECKSUM} /tmp/helm.tar.gz" | sha256sum -c - \
     && tar -C /tmp -xzf /tmp/helm.tar.gz \
     && install /tmp/linux-amd64/helm /usr/local/bin/helm \
     && rm /tmp/helm.tar.gz
+
+ARG KUBESEAL_VERSION=0.27.3
+RUN curl -OL "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz" \
+    && tar -xvzf "kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz" kubeseal \
+    && install -m 755 kubeseal /usr/local/bin/kubeseal \
+    && rm -f "kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz"
 
 # Completions system-wide
 RUN kubectl completion zsh > "/usr/share/zsh/vendor-completions/_kubectl" \

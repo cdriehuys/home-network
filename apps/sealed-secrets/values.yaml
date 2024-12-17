@@ -1,0 +1,2 @@
+sealed-secrets:
+  fullNameOverride: sealed-secrets-controller

@@ -45,6 +45,10 @@ variable "apps" {
         namespace = "media"
         path      = "apps/sabnzbd"
     }
+    "sealed-secrets" = {
+      namespace = "kube-system"
+      path = "apps/sealed-secrets"
+    }
     "sonarr" = {
         namespace = "media"
         path      = "apps/sonarr"
