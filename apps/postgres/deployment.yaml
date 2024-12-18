@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: postgres
   namespace: postgres
-  label:
+  labels:
     app: postgres
 
 spec:
