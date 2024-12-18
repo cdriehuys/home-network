@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: flight-school
+  namespace: flight-school
+
+spec:
+  selector:
+    app: flight-school
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http
+      name: http

@@ -1,0 +1,15 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: flight-school-env
+  namespace: flight-school
+spec:
+  encryptedData:
+    dsn: AgCc0/CPz59U3RX/8SGXhSyOGLLF9vmU4Xz3oKh644/Et2UfDcbdlG+TfJJdxYp+mCPAXhC0If8/y6vmMKnhjzTQ68CpxM5CAXgUFPjckrRtzc8Yxn67fARdJGmIJpt8XNr8bqgND6YTGQQBh84ZHj4YhukeQ7SmXoTjtu/WlysQqORTQ01D/n94rzOn173oF76tXCGB+7nPg9VihV3FMkvRDqDUAas7s/sEyoXm1TbmreAMmUpOKRmB2Ev9U/eWUUVvOh5tHcifSSo7ZslH3fCqN+fTjx/VvuuuYbVeuA4fJQU83N/7aup7KonmeJUmezwmcipCH9+/ncz7rzbYaWATtWQ8DDcvrAUU6kumy9MzRZBu8zVxuSOnV4pOazHtYU6RZm9dIBpav36oLTYWag2TOdXCgYhIZW+nmW+wmI2ccar85pDkOLUe6cvQb4hksFxPhKUvpiqkWH2dhUa6kny0gBM56CwbNQbixmJjnuOMukgaG5oO2HNNctEwSARJXThsP4MBpCTIqIKVh5Zqe8wpZC2zMeP7gSZhMLFJNAKA/SqwKW5FwwWgtlo8bWCsAlKhqZi9ddCwUE3omSHCgignEi95/J9Mcd0AjST5GarQpg0XScwcUuGhMuMkFsNEP96sLrDNBOGEcL3SvfIehknq8M7bRB01wu6L8/sppsIQho5+KduR2+sC8hC/rzr0pTwb+qRpHW0ecu/TzFqpgzXdd0CQCuGCU1ZeXBWrCjYUIqy6Q37OWIlGPM3BNI4u5PxFU63yDroqd9Bz1GmmoFxfgZekXOdoaSGfQ0j2+ulCtg==
+  template:
+    metadata:
+      creationTimestamp: null
+      name: flight-school-env
+      namespace: flight-school
