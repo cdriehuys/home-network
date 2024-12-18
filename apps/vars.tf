@@ -12,7 +12,7 @@ variable "apps" {
   type = map(object({
     namespace = string
     path      = string
-    revision = optional(string, "HEAD")
+    revision  = optional(string, "HEAD")
   }))
   description = "Applications to deploy"
 
@@ -29,29 +29,33 @@ variable "apps" {
       namespace = "monitoring"
       path      = "apps/node-exporter"
     }
+    "postgres" = {
+      namespace = "postgres"
+      path      = "apps/postgres"
+    }
     "prometheus" = {
-        namespace = "monitoring"
-        path      = "apps/prometheus"
+      namespace = "monitoring"
+      path      = "apps/prometheus"
     }
     "prowlarr" = {
-        namespace = "media"
-        path      = "apps/prowlarr"
+      namespace = "media"
+      path      = "apps/prowlarr"
     }
     "radarr" = {
-        namespace = "media"
-        path      = "apps/radarr"
+      namespace = "media"
+      path      = "apps/radarr"
     }
     "sabnzbd" = {
-        namespace = "media"
-        path      = "apps/sabnzbd"
+      namespace = "media"
+      path      = "apps/sabnzbd"
     }
     "sealed-secrets" = {
       namespace = "kube-system"
-      path = "apps/sealed-secrets"
+      path      = "apps/sealed-secrets"
     }
     "sonarr" = {
-        namespace = "media"
-        path      = "apps/sonarr"
+      namespace = "media"
+      path      = "apps/sonarr"
     }
   }
 }

@@ -138,3 +138,8 @@ apps:
     pushd ./apps
     terraform init
     terraform apply
+
+# Make the database accessible locally
+[group('apps')]
+forward-db port='5432':
+    kubectl -n postgres port-forward service/postgres {{ port }}:5432
