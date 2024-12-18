@@ -21,7 +21,6 @@ spec:
       containers:
         - name: flight-school
           image: &image ghcr.io/cdriehuys/flight-school:v0.2.0
-          args: ["--debug"]
           ports:
             - containerPort: 8000
               name: http
