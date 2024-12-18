@@ -17,6 +17,10 @@ variable "apps" {
   description = "Applications to deploy"
 
   default = {
+    "flight-school" = {
+      namespace = "flight-school"
+      path      = "apps/flight-school"
+    }
     "grafana" = {
       namespace = "monitoring"
       path      = "apps/grafana"
