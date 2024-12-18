@@ -1,0 +1,15 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: postgres-env
+  namespace: postgres
+spec:
+  encryptedData:
+    POSTGRES_PASSWORD: AgBI4Hjk2A9N3hvyPMBSu5h0leoJIZAeTnRfthPPd4Barw/RXWGhKYqtJIdk2rFqoVjwP8l4VlWJEQ+Mhrp5y1OJ0rEknP79rmxuYZ/Ime7vVwYp5LRRbbYE/d6wcn4A0OYM2ioqVL/tzaPwlQDktDnAGSKUKvqYdLKzUqc9PgaYU9i/Dix1pLY0/hLVHBNOhwRm+j8ogaOsvkXa296m0P+BkhKgw+9t+sQXSe5TppCQbe3SyAPOPsO5eesEMswydj/9OOyfcqR4GF6SEckRkorBxfXcSd9Gj3yJtRKIQdqAgkycm84vJ5y5QHgKn4FeP99lYmNPB2XOj4nGfyFHe7jpApqvpecJTS3i/SrqNJYENLP/IzaGrjNoctESxpaSImsbphx3FE2g0+OalahtEO2WrtmFOc7izSqKqVBWwftX86fgj1ZyxUDYOlkr213ZTO1FAC5/smW/8twcqGL7WB3NVCBYyyCbTajEo9gTGMHIIQQbf+0OSia4m1Cs8wCzIU/cJqJ6pPopZoiBh2s7Zu7RTaZSCFwdce1rZNfbnEf2R5YegFT9MckSgfFABMYdGribycjA57hr66+6chKfZGrRa0CBmBbXPk5nQX0GCnNVJZE0ioK37yI6i/1bMlqM4JNXop2EVHhzytCSLoj1VC2QsUCuuHcgxgRukDz2LtdOLT/fZpZ27i6OKz99gvgd4uR5JTdqYZqfSKtzVRNEyrrrGqfme/vAzkYebwRlrGvzbQ==
+  template:
+    metadata:
+      creationTimestamp: null
+      name: postgres-env
+      namespace: postgres
