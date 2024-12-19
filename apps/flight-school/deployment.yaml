@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: flight-school
-          image: &image ghcr.io/cdriehuys/flight-school:v0.2.0
+          image: &image ghcr.io/cdriehuys/flight-school:v0.3.0
           ports:
             - containerPort: 8000
               name: http
@@ -35,7 +35,7 @@ spec:
       initContainers:
         - name: flight-school-migrate
           image: *image
-          args: ["migrate"]
+          args: ["migrate", "--populate-acs"]
 
           env:
             - name: FLIGHT_SCHOOL_DSN
