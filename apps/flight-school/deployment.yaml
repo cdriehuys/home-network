@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: flight-school
-          image: &image ghcr.io/cdriehuys/flight-school:v0.3.0
+          image: &image ghcr.io/cdriehuys/flight-school:v0.4.0
           ports:
             - containerPort: 8000
               name: http
