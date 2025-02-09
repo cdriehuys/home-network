@@ -6,4 +6,4 @@ version: 0.0.0
 
 # SABnzbd version:
 # https://github.com/linuxserver/docker-sabnzbd/pkgs/container/sabnzbd/versions?filters%5Bversion_type%5D=tagged
-appVersion: "4.3.3"
+appVersion: "4.4.1"
