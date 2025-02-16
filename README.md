@@ -61,5 +61,18 @@ were run in containers orchestrated through Nomad. Access to applications was
 proxied through Traefik, using the Consul integration to discover which services
 should be exposed.
 
+## Troubleshooting
+
+### External DNS Failures
+
+Services that required external networking were failing. This included jobs
+running on Nomad and Kubernetes. The root cause was the second DNS server
+failing to respond to queries because its clock was out of sync.
+
+It's possible the time was too out of sync for systemd to keep it in sync.
+Manually setting the time to the approximate current time and then rebooting the
+system corrected the issue.
+
+
 [provisioning]: ./provisioning/README.md
 

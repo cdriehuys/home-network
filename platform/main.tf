@@ -34,7 +34,7 @@ resource "helm_release" "cilium" {
   name       = "cilium"
   repository = "https://helm.cilium.io/"
   chart      = "cilium"
-  version    = "1.16.3"
+  version    = "1.17.0"
 
   namespace        = "cilium"
   create_namespace = true

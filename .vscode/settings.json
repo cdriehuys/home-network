@@ -7,4 +7,5 @@
 
     // We run on the host network, so no port forwarding is necessary.
     "remote.autoForwardPorts": false,
+    "ansible.python.interpreterPath": "/usr/local/bin/python",
 }
