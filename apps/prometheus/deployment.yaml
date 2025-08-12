@@ -29,6 +29,10 @@ spec:
       containers:
         - name: prometheus
           image: prom/prometheus:v2.55.0
+
+          args:
+            - --storage.tsdb.retention.size=1GB
+
           ports:
             - containerPort: 9090
               name: http
