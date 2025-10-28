@@ -81,6 +81,8 @@ volumes:
 
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts:
+  - name: backups
+    mountPath: /backups
   - name: config
     mountPath: /config
   - name: media
