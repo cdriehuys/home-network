@@ -25,12 +25,17 @@ spec:
           ports:
             - containerPort: 8989
           volumeMounts:
+            - name: backups
+              mountPath: /backups
             - name: config
               mountPath: /config
             - name: media
               mountPath: /data
 
       volumes:
+        - name: backups
+          persistentVolumeClaim:
+            claimName: nfs-media-backups
         - name: config
           persistentVolumeClaim:
             claimName: sonarr-config-claim
