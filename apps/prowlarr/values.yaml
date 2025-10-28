@@ -69,6 +69,9 @@ readinessProbe:
 
 # Additional volumes on the output Deployment definition.
 volumes:
+  - name: backups
+    persistentVolumeClaim:
+      claimName: nfs-media-backups
   - name: config
     persistentVolumeClaim:
       claimName: "prowlarr-config-claim"
