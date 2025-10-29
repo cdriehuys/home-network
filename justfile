@@ -45,7 +45,7 @@ metal-fetch-kubeconfig:
     #!/usr/bin/env bash
     set -euf
 
-    auth_check="$(kubectl auth can-i get pods)"
+    auth_check="$(kubectl auth can-i get pods || true)"
     if [[ "${auth_check}" = "yes" ]]; then
         echo "Valid Kubernetes config already present"
         exit 0

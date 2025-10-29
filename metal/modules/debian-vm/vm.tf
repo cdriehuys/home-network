@@ -56,6 +56,11 @@ resource "proxmox_virtual_environment_vm" "this" {
     floating = var.memory
   }
 
+  disk {
+    interface = "scsi0"
+    size = var.disk_size
+  }
+
   initialization {
     dynamic "ip_config" {
       for_each = var.ipv4_address == "" ? [] : [""]

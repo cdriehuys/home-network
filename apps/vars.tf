@@ -17,10 +17,10 @@ variable "apps" {
   description = "Applications to deploy"
 
   default = {
-    "flight-school" = {
-      namespace = "flight-school"
-      path      = "apps/flight-school"
-    }
+    # "flight-school" = {
+    #   namespace = "flight-school"
+    #   path      = "apps/flight-school"
+    # }
     "grafana" = {
       namespace = "monitoring"
       path      = "apps/grafana"
@@ -33,10 +33,10 @@ variable "apps" {
       namespace = "monitoring"
       path      = "apps/node-exporter"
     }
-    "postgres" = {
-      namespace = "postgres"
-      path      = "apps/postgres"
-    }
+    # "postgres" = {
+    #   namespace = "postgres"
+    #   path      = "apps/postgres"
+    # }
     "prometheus" = {
       namespace = "monitoring"
       path      = "apps/prometheus"

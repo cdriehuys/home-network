@@ -113,7 +113,7 @@ resource "kubernetes_manifest" "issuer_acme_production" {
   }
 }
 
-resource "kubernetes_manifest" "wilcard_cert" {
+resource "kubernetes_manifest" "wildcard_cert" {
   manifest = {
     apiVersion = "cert-manager.io/v1"
     kind       = "Certificate"
@@ -131,5 +131,14 @@ resource "kubernetes_manifest" "wilcard_cert" {
       }
     }
   }
+}
+
+resource "helm_release" "reflector" {
+  depends_on = [helm_release.cilium]
+
+  name       = "reflector"
+  repository = "https://emberstack.github.io/helm-charts"
+  chart      = "reflector"
+  version    = "v9.1.37"
 }
 

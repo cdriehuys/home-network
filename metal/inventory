@@ -63,7 +63,7 @@ def parse_args(args: list[str]):
 
 
 def main(args: list[str]):
-    logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
+    logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
 
     parsed = parse_args(args)
 

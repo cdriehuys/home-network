@@ -51,12 +51,21 @@ resource "helm_release" "cilium" {
 }
 
 locals {
-  argocd_namespace = "argocd"
+  argocd_namespace = kubernetes_namespace.argocd.metadata[0].name
   argocd_provisioner = "provisioner"
 
   argocd_rbac_policy = <<EOF
 g, ${local.argocd_provisioner}, role:admin
 EOF
+}
+
+resource "kubernetes_namespace" "argocd" {
+  metadata {
+    name = "argocd"
+    labels = {
+      name = "argocd"
+    }
+  }
 }
 
 resource "helm_release" "argocd" {
@@ -68,7 +77,6 @@ resource "helm_release" "argocd" {
   version    = "7.6.9"
 
   namespace = local.argocd_namespace
-  create_namespace = true
 
   set_list {
     name  = "server.extraArgs"
@@ -88,6 +96,17 @@ resource "helm_release" "argocd" {
   set {
     name = "configs.rbac.policy\\.csv"
     value = replace(local.argocd_rbac_policy, ",", "\\,")
+  }
+}
+
+resource "kubernetes_secret" "argocd_wildcard_cert" {
+  metadata {
+    name = "lan-wildcard-tls"
+    namespace = local.argocd_namespace
+    annotations = {
+      "reflector.v1.k8s.emberstack.com/reflects" = "default/lan-wildcard-tls"
+      "reflector.v1.k8s.emberstack.com/reflected-version" = ""
+    }
   }
 }
 

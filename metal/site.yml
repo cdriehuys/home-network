@@ -1,4 +1,18 @@
 ---
+- name: K8s baseline
+  hosts: k8s
+  become: true
+
+  tasks:
+    - name: Update packages
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
+        # This is run immediately after VM creation, so there may be other apt
+        # tasks holding the lock.
+        lock_timeout: 300
+        update_cache: true
+
 - name: K8s Server
   hosts: k8s_server
   become: true

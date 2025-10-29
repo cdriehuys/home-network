@@ -18,6 +18,12 @@ variable "authorized_keys" {
     description = "The SSH keys used to access the VM."
 }
 
+variable "disk_size" {
+    type = number
+    description = "Disk size in GB"
+    default = 8
+}
+
 variable "tags" {
     type = list(string)
     description = "Tags to add to the VM."
