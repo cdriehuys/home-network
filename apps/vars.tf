@@ -29,6 +29,10 @@ variable "apps" {
       namespace = "homepage"
       path      = "apps/homepage"
     }
+    "house-docs" = {
+      namespace = "house-docs"
+      path = "apps/house-docs"
+    }
     "node-exporter" = {
       namespace = "monitoring"
       path      = "apps/node-exporter"

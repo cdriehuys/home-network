@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: house-docs
+  labels:
+    app: house-docs
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: house-docs
+
+  template:
+    metadata:
+      labels:
+        app: house-docs
+
+    spec:
+      containers:
+        - name: house-docs
+          image: registry.proxy2.lan.qidux.com/house-docs:latest
+          ports:
+            - containerPort: 80

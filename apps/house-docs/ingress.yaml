@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: house-docs-ingress
+
+spec:
+  rules:
+    - host: house.proxy2.lan.qidux.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: house-docs
+                port:
+                  name: http
+
+    - host: home.proxy2.lan.qidux.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: house-docs
+                port:
+                  name: http
+
+  tls:
+    - hosts:
+        - house.proxy2.lan.qidux.com
+        - home.proxy2.lan.qidux.com
+      secretName: lan-wildcard-tls
