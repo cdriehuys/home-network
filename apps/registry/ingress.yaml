@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: registry-ingress
+
+spec:
+  rules:
+    - host: registry.proxy2.lan.qidux.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: registry
+                port:
+                  name: http
+
+  tls:
+    - hosts:
+        - registry.proxy2.lan.qidux.com
+      secretName: lan-wildcard-tls

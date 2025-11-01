@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry
+  labels:
+    app: registry
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registry
+
+  template:
+    metadata:
+      labels:
+        app: registry
+
+    spec:
+      containers:
+        - name: registry
+          # All tags:
+          # https://hub.docker.com/_/registry/tags
+          image: registry:3.0.0
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: registry-data
+              mountPath: /var/lib/registry
+
+      volumes:
+        - name: registry-data
+          persistentVolumeClaim:
+            claimName: registry-data-claim

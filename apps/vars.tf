@@ -49,6 +49,10 @@ variable "apps" {
       namespace = "media"
       path      = "apps/radarr"
     }
+    "registry" = {
+      namespace = "registry"
+      path      = "apps/registry"
+    }
     "sabnzbd" = {
       namespace = "media"
       path      = "apps/sabnzbd"
