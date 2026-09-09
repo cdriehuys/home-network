@@ -50,9 +50,8 @@ ingress:
        - sabnzbd.proxy2.lan.qidux.com
 
 resources: {}
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
+  limits:
+    memory: 512Mi
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
