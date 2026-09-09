@@ -49,7 +49,7 @@ ingress:
      hosts:
        - sabnzbd.proxy2.lan.qidux.com
 
-resources: {}
+resources:
   limits:
     memory: 512Mi
   # requests:
